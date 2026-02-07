@@ -370,14 +370,15 @@
         
         L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-        // 2. Data for Custom Markers (Ahmedabad Spots)
+        // Data for Custom Markers (Melbourne Spots)
         const parkingSpots = [
-            { name: "Vastrapur", coords: [23.0350, 72.5250], avail: 65, color: '#10b981' }, // Green
-            { name: "Navrangpura", coords: [23.0380, 72.5650], avail: 58, color: '#10b981' }, // Green
-            { name: "Law Garden", coords: [23.0260, 72.5580], avail: 12, color: '#ef4444' }, // Red
-            { name: "CG Road", coords: [23.0220, 72.5720], avail: 18, color: '#ef4444' }, // Red
-            { name: "Ashram Road", coords: [23.0450, 72.5750], avail: 22, color: '#dc2626' } // Dark Red
-        ];
+          { name: "CBD - Flinders Street", coords: [-37.8183, 144.9671], avail: 28, color: "#ef4444" }, // Red
+          { name: "Docklands", coords: [-37.8140, 144.9460], avail: 62, color: "#10b981" }, // Green
+          { name: "Southbank", coords: [-37.8226, 144.9646], avail: 35, color: "#f59e0b" }, // Amber
+          { name: "Fitzroy", coords: [-37.7986, 144.9787], avail: 54, color: "#10b981" }, // Green
+          { name: "Carlton", coords: [-37.8000, 144.9660], avail: 22, color: "#dc2626" }, // Dark Red
+          { name: "Richmond", coords: [-37.8239, 144.9980], avail: 41, color: "#f59e0b" } // Amber
+          ];
 
         // 3. Render Heatmap "Blobs" (Visual Simulation)
         // We use large transparent circles to mimic the heat gradient in the screenshot
