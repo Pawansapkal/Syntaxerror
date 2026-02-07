@@ -361,7 +361,7 @@
         const map = L.map('map', {
             zoomControl: false,
             attributionControl: false
-        }).setView([23.0300, 72.5600], 13); // Center near CG Road/Navrangpura
+        }).setView([-37.8136, 144.9631], 14);// Center near CG Road/Navrangpura
 
         // Add Light Styled Map Tiles
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -371,21 +371,20 @@
         L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
         // Data for Custom Markers (Melbourne Spots)
-        const parkingSpots = [
-          { name: "CBD - Flinders Street", coords: [-37.8183, 144.9671], avail: 28, color: "#ef4444" }, // Red
-          { name: "Docklands", coords: [-37.8140, 144.9460], avail: 62, color: "#10b981" }, // Green
-          { name: "Southbank", coords: [-37.8226, 144.9646], avail: 35, color: "#f59e0b" }, // Amber
-          { name: "Fitzroy", coords: [-37.7986, 144.9787], avail: 54, color: "#10b981" }, // Green
-          { name: "Carlton", coords: [-37.8000, 144.9660], avail: 22, color: "#dc2626" }, // Dark Red
-          { name: "Richmond", coords: [-37.8239, 144.9980], avail: 41, color: "#f59e0b" } // Amber
-          ];
+const parkingSpots = [
+    { name: "Fed Square", coords: [-37.8180, 144.9691], avail: 65, color: '#10b981' }, 
+    { name: "Queen Vic Market", coords: [-37.8076, 144.9568], avail: 58, color: '#10b981' }, 
+    { name: "Crown Casino", coords: [-37.8236, 144.9583], avail: 12, color: '#ef4444' }, 
+    { name: "Docklands", coords: [-37.8183, 144.9450], avail: 18, color: '#ef4444' }, 
+    { name: "Southbank", coords: [-37.8220, 144.9650], avail: 22, color: '#dc2626' } 
+];
 
         // 3. Render Heatmap "Blobs" (Visual Simulation)
         // We use large transparent circles to mimic the heat gradient in the screenshot
-        const heatBlobs = [
-            { coords: [23.0250, 72.5600], color: '#ef4444', radius: 1500 }, // Hotspot Center (CG Road)
-            { coords: [23.0350, 72.5300], color: '#f59e0b', radius: 1200 }, // Warm Spot (Vastrapur)
-        ];
+       const heatBlobs = [
+    { coords: [-37.8220, 144.9650], color: '#ef4444', radius: 800 }, // Hotspot near Southbank
+    { coords: [-37.8076, 144.9568], color: '#f59e0b', radius: 600 }, // Warm spot near Market
+];
 
         heatBlobs.forEach(blob => {
             L.circle(blob.coords, {
