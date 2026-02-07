@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark AI | Predictive Parking Dashboard</title>
+    <title>SmartPark AI | Melbourne Edition</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -16,476 +15,256 @@
             --primary: #00f2fe;
             --secondary: #4facfe;
             --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-bg: rgba(15, 23, 42, 0.85);
             --text: #f8fafc;
-            --success: #22c55e;
-            --warning: #eab308;
-            --danger: #ef4444;
             --glass: rgba(255, 255, 255, 0.05);
             --border: rgba(255, 255, 255, 0.1);
         }
 
-        .light-mode {
-            --bg-dark: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.8);
-            --text: #1e293b;
-            --glass: rgba(0, 0, 0, 0.05);
-            --border: rgba(0, 0, 0, 0.1);
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: var(--bg-dark); color: var(--text); height: 100vh; overflow: hidden; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
+        /* App Grid */
+        .app-container { display: grid; grid-template-columns: 320px 1fr; height: 100vh; }
+        @media (max-width: 1024px) { .app-container { grid-template-columns: 1fr; } aside { display: none; } }
 
-        body {
-            background: var(--bg-dark);
-            color: var(--text);
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* Layout */
-        .app-container {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            height: 100vh;
-            gap: 0;
-        }
-
-        @media (max-width: 1024px) {
-            .app-container { grid-template-columns: 1fr; overflow-y: auto; height: auto; }
-            #map { height: 400px !important; }
-        }
-
-        /* Sidebar Styling */
+        /* Sidebar */
         aside {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(20px);
             border-right: 1px solid var(--border);
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            z-index: 100;
-            overflow-y: auto;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        label { font-size: 0.85rem; font-weight: 600; opacity: 0.8; }
-
-        input, select {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 8px;
-            color: inherit;
-            outline: none;
-        }
-
-        input[type="range"] { accent-color: var(--primary); }
-
-        .btn-predict {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
-        }
-
-        .btn-predict:hover { transform: translateY(-2px); }
-
-        /* Map Section */
-        main { position: relative; }
-        #map { width: 100%; height: 100%; z-index: 1; }
-
-        /* Dashboard Overlays */
-        .legend {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            z-index: 1000;
-        }
-
-        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; margin-bottom: 5px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
-
-        /* Prediction Results Overlay */
-        .result-overlay {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 320px;
-            background: var(--card-bg);
             padding: 20px;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            z-index: 1000;
-            display: none;
-            animation: slideIn 0.3s ease-out;
+            display: flex; flex-direction: column; gap: 20px;
+            z-index: 20;
         }
 
-        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .stat-card { background: var(--glass); padding: 10px; border-radius: 10px; text-align: center; }
-        .stat-val { font-size: 1.2rem; font-weight: bold; display: block; }
-        .stat-label { font-size: 0.7rem; opacity: 0.7; }
-
-        /* Loader */
-        #loader {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            gap: 15px;
+        .logo { 
+            font-size: 1.5rem; font-weight: 800; 
+            background: linear-gradient(to right, #4facfe, #00f2fe); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 10px;
         }
 
-        .spinner {
-            width: 50px; height: 50px;
-            border: 5px solid var(--glass);
-            border-top: 5px solid var(--primary);
+        .control-group label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 5px; display: block; }
+        .control-group input, .control-group select {
+            width: 100%; background: var(--glass); border: 1px solid var(--border);
+            padding: 8px; border-radius: 6px; color: white; outline: none;
+        }
+
+        /* Gradient Button */
+        .btn-predict {
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            border: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: transform 0.2s;
+        }
+        .btn-predict:hover { transform: scale(1.02); }
+
+        /* Map & Overlay */
+        main { position: relative; height: 100%; width: 100%; }
+        #map { height: 100%; width: 100%; z-index: 1; background: #0a0f1e; }
+
+        /* Custom Gradient Marker Styles */
+        .gradient-marker {
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            box-shadow: 0 0 15px currentColor;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0px rgba(255,255,255,0.4); }
+            100% { box-shadow: 0 0 0 20px rgba(255,255,255,0); }
         }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* Chart Area */
-        .history-section { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); }
-
-        .theme-toggle {
-            cursor: pointer;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 1001;
-            background: var(--card-bg);
-            padding: 10px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
+        /* Floating Info Card */
+        .info-card {
+            position: absolute; top: 20px; left: 20px; width: 280px;
+            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px);
+            border: 1px solid var(--border); border-radius: 15px; padding: 20px;
+            z-index: 1000; display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+
+        /* Legend */
+        .legend {
+            position: absolute; bottom: 20px; right: 20px;
+            background: var(--card-bg); padding: 15px; border-radius: 10px;
+            z-index: 1000; border: 1px solid var(--border); font-size: 0.8rem;
+        }
+        .legend div { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="spinner"></div>
-        <p>Analyzing Traffic & Historical Data...</p>
-    </div>
+<div class="app-container">
+    <aside>
+        <div class="logo"><i data-lucide="map-pin"></i> SmartPark MEL</div>
+        
+        <div class="control-group">
+            <label>Time of Day</label>
+            <input type="range" id="timeSlider" min="0" max="23" value="14" oninput="updateLabel(this.value)">
+            <div style="text-align: right; font-size: 0.8rem; color: var(--primary);" id="timeLabel">14:00</div>
+        </div>
 
-    <div class="app-container">
-        <aside>
-            <div class="logo">
-                <i data-lucide="zap"></i>
-                SmartPark AI
-            </div>
+        <div class="control-group">
+            <label>Event Mode</label>
+            <select id="eventMode">
+                <option value="none">No Events</option>
+                <option value="mcg">MCG Match Day</option>
+                <option value="convention">Convention Ctr</option>
+            </select>
+        </div>
 
-            <div class="control-group">
-                <label>Prediction Time (Hour)</label>
-                <input type="range" id="timeInput" min="0" max="23" value="12" oninput="updateTimeLabel(this.value)">
-                <span id="timeLabel">12:00 PM</span>
-            </div>
+        <div class="control-group">
+            <label>Traffic Density</label>
+            <input type="range" id="trafficSlider" min="0" max="100" value="45">
+        </div>
 
-            <div class="control-group">
-                <label>Day Type</label>
-                <select id="dayType">
-                    <option value="weekday">Weekday</option>
-                    <option value="weekend">Weekend / Holiday</option>
-                </select>
-            </div>
+        <button class="btn-predict" onclick="runSimulation()">
+            <i data-lucide="radar"></i> Predict Zones
+        </button>
 
-            <div class="control-group">
-                <label>Traffic Density</label>
-                <input type="range" id="trafficInput" min="0" max="100" value="30">
-            </div>
+        <div style="margin-top: auto;">
+            <label style="font-size: 0.8rem; opacity: 0.6;">Availability History</label>
+            <canvas id="trendChart" height="120"></canvas>
+        </div>
+    </aside>
 
-            <div class="control-group" style="flex-direction: row; justify-content: space-between; align-items: center;">
-                <label>Major Local Event?</label>
-                <input type="checkbox" id="eventToggle">
-            </div>
+    <main>
+        <div id="map"></div>
+        
+        <div class="info-card" id="infoCard">
+            <h3 id="zoneName">Federation Square</h3>
+            <h1 id="zoneValue" style="font-size: 2.5rem; color: var(--primary); margin: 10px 0;">85%</h1>
+            <p style="font-size: 0.8rem; opacity: 0.7;">Confidence: <span id="zoneConf">92%</span></p>
+        </div>
 
-            <button class="btn-predict" onclick="simulateAI()">
-                <i data-lucide="cpu"></i> Predict Availability
-            </button>
+        <div class="legend">
+            <div><div class="dot" style="background: #00f2fe; box-shadow: 0 0 10px #00f2fe"></div> High (>50%)</div>
+            <div><div class="dot" style="background: #facc15; box-shadow: 0 0 10px #facc15"></div> Medium (20-50%)</div>
+            <div><div class="dot" style="background: #ef4444; box-shadow: 0 0 10px #ef4444"></div> Low (<20%)</div>
+        </div>
+    </main>
+</div>
 
-            <div class="history-section">
-                <label>Recent Trends (Avg %)</label>
-                <canvas id="historyChart" height="150"></canvas>
-            </div>
+<script>
+    lucide.createIcons();
 
-            <footer style="font-size: 0.7rem; opacity: 0.6; margin-top: 10px;">
-                &copy; 2024 SmartPark AI | Hackathon Edition
-            </footer>
-        </aside>
+    // 1. Initialize Map centered on Melbourne CBD
+    const map = L.map('map').setView([-37.8136, 144.9631], 14);
 
-        <main>
-            <div id="map"></div>
+    // Dark Mode Tiles (CartoDB)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap contributors, © CARTO'
+    }).addTo(map);
 
-            <button class="theme-toggle" onclick="toggleTheme()">
-                <i data-lucide="moon" id="themeIcon"></i>
-            </button>
+    // 2. Melbourne Data Points
+    const zones = [
+        { name: "Federation Square", coords: [-37.8180, 144.9691], base: 40 },
+        { name: "Queen Victoria Market", coords: [-37.8076, 144.9568], base: 60 },
+        { name: "Crown Casino Complex", coords: [-37.8236, 144.9583], base: 20 },
+        { name: "Melbourne Central", coords: [-37.8110, 144.9626], base: 30 },
+        { name: "Docklands District", coords: [-37.8183, 144.9450], base: 70 },
+        { name: "MCG / Yarra Park", coords: [-37.8200, 144.9834], base: 80 }
+    ];
 
-            <div class="legend">
-                <div class="legend-item"><div class="dot" style="background: var(--success)"></div> High (>50%)</div>
-                <div class="legend-item"><div class="dot" style="background: var(--warning)"></div> Medium (20-50%)</div>
-                <div class="legend-item"><div class="dot" style="background: var(--danger)"></div> Low (<20%)</div>
-                <button onclick="resetMap()" style="margin-top:10px; width:100%; padding:5px; cursor:pointer; font-size: 0.7rem; border-radius: 4px; border: 1px solid var(--border);">Reset Map</button>
-            </div>
+    let markersLayer = L.layerGroup().addTo(map);
 
-            <div class="result-overlay" id="resultCard">
-                <h3 id="resZoneName">Central Square</h3>
-                <p id="resTime" style="font-size: 0.8rem; opacity: 0.7;">Predicting for 14:00</p>
-                <div class="stat-grid">
-                    <div class="stat-card">
-                        <span class="stat-val" id="resAvailable">85%</span>
-                        <span class="stat-label">Available</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-val" id="resConf">92%</span>
-                        <span class="stat-label">Confidence</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-val" id="resTraffic">Low</span>
-                        <span class="stat-label">Traffic</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-val" id="resImpact">None</span>
-                        <span class="stat-label">Event Impact</span>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
+    // 3. Logic to create Gradient Markers
+    function createGradientMarker(lat, lng, availability, name) {
+        // Determine color based on availability
+        let color = availability > 50 ? '0, 242, 254' : (availability > 20 ? '250, 204, 21' : '239, 68, 68'); // RGB values
+        let hexColor = availability > 50 ? '#00f2fe' : (availability > 20 ? '#facc15' : '#ef4444');
 
-    <script>
-        // Initialize Icons
-        lucide.createIcons();
-
-        // 1. Map Initialization
-        const map = L.map('map').setView([40.7128, -74.0060], 13);
-        const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
-
-        // Parking Zones Data
-        const zones = [
-            { id: 1, name: "Downtown Plaza", coords: [40.7128, -74.0060], base: 60 },
-            { id: 2, name: "West Side Mall", coords: [40.7228, -74.0160], base: 40 },
-            { id: 3, name: "Harbor District", coords: [40.7028, -73.9960], base: 70 },
-            { id: 4, name: "Tech Park", coords: [40.7328, -73.9860], base: 90 },
-            { id: 5, name: "Central Station", coords: [40.7150, -73.9990], base: 20 }
-        ];
-
-        let zoneLayers = L.layerGroup().addTo(map);
-        let historyData = [45, 52, 48, 60, 55];
-
-        // 2. Map Functions
-        function renderZones(activePrediction = null) {
-            zoneLayers.clearLayers();
-            
-            zones.forEach(zone => {
-                let availability = activePrediction ? activePrediction[zone.id] : zone.base;
-                let color = availability > 50 ? '#22c55e' : (availability > 20 ? '#eab308' : '#ef4444');
-                
-                const circle = L.circle(zone.coords, {
-                    color: color,
-                    fillColor: color,
-                    fillOpacity: 0.5,
-                    radius: 300
-                }).addTo(zoneLayers);
-
-                circle.bindPopup(`
-                    <div style="color: #333">
-                        <b>${zone.name}</b><br>
-                        Estimated Availability: ${availability}%<br>
-                        <button onclick="zoomTo(${zone.coords[0]}, ${zone.coords[1]})" style="margin-top:5px; cursor:pointer">Zoom</button>
-                    </div>
-                `);
-
-                circle.on('click', () => showDetails(zone, availability));
-            });
-        }
-
-        renderZones();
-
-        function zoomTo(lat, lng) {
-            map.flyTo([lat, lng], 15);
-        }
-
-        function resetMap() {
-            map.flyTo([40.7128, -74.0060], 13);
-            document.getElementById('resultCard').style.display = 'none';
-        }
-
-        // 3. AI Simulation Logic
-        function simulateAI() {
-            const loader = document.getElementById('loader');
-            const resultCard = document.getElementById('resultCard');
-            
-            loader.style.display = 'flex';
-            resultCard.style.display = 'none';
-
-            // Simulate Network Delay
-            setTimeout(() => {
-                const hour = parseInt(document.getElementById('timeInput').value);
-                const isWeekend = document.getElementById('dayType').value === 'weekend';
-                const traffic = parseInt(document.getElementById('trafficInput').value);
-                const event = document.getElementById('eventToggle').checked;
-
-                let predictions = {};
-                let sum = 0;
-
-                zones.forEach(zone => {
-                    // Start with base
-                    let val = zone.base;
-                    
-                    // Time influence (Night 0-6 is empty, Lunch 12-14 is full)
-                    if (hour < 6) val += 30;
-                    if (hour >= 11 && hour <= 14) val -= 20;
-                    if (hour >= 17 && hour <= 19) val -= 25;
-
-                    // Traffic impact
-                    val -= (traffic / 4);
-
-                    // Event impact
-                    if (event) val -= 40;
-
-                    // Weekend variability
-                    if (isWeekend) val += (Math.random() * 20 - 10);
-
-                    // Clamp
-                    val = Math.max(5, Math.min(98, Math.round(val)));
-                    predictions[zone.id] = val;
-                    sum += val;
-                });
-
-                renderZones(predictions);
-                updateHistory(Math.round(sum / zones.length));
-                
-                loader.style.display = 'none';
-                
-                // Show info for the first zone as default update
-                showDetails(zones[0], predictions[zones[0].id]);
-                
-                // Play Sound Alert if low
-                if (predictions[zones[0].id] < 15) {
-                    const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-                    audio.play().catch(e => console.log("Sound blocked by browser"));
-                }
-            }, 1500);
-        }
-
-        function showDetails(zone, val) {
-            const card = document.getElementById('resultCard');
-            const hour = document.getElementById('timeInput').value;
-            const traffic = parseInt(document.getElementById('trafficInput').value);
-
-            document.getElementById('resZoneName').innerText = zone.name;
-            document.getElementById('resTime').innerText = `Predicting for ${hour}:00`;
-            document.getElementById('resAvailable').innerText = val + '%';
-            document.getElementById('resConf').innerText = (85 + Math.random() * 10).toFixed(1) + '%';
-            document.getElementById('resTraffic').innerText = traffic > 70 ? 'High' : (traffic > 30 ? 'Med' : 'Low');
-            document.getElementById('resImpact').innerText = document.getElementById('eventToggle').checked ? 'High' : 'None';
-            
-            card.style.display = 'block';
-            
-            // Pulse animation on the zone
-            const pulse = L.circle(zone.coords, {
-                radius: 500,
-                color: 'white',
-                weight: 2,
-                opacity: 0.8,
-                fill: false
-            }).addTo(map);
-            
-            setTimeout(() => map.removeLayer(pulse), 1000);
-        }
-
-        // 4. UI Helpers
-        function updateTimeLabel(val) {
-            const suffix = val >= 12 ? "PM" : "AM";
-            const displayHour = val % 12 || 12;
-            document.getElementById('timeLabel').innerText = `${displayHour}:00 ${suffix}`;
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            document.getElementById('themeIcon').setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            
-            // Update Map Style
-            const theme = isLight ? 'light_all' : 'dark_all';
-            tileLayer.setUrl(`https://{s}.basemaps.cartocdn.com/${theme}/{z}/{x}/{y}{r}.png`);
-            lucide.createIcons();
-        }
-
-        // 5. Chart.js Initialization
-        const ctx = document.getElementById('historyChart').getContext('2d');
-        let myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['-4h', '-3h', '-2h', '-1h', 'Now'],
-                datasets: [{
-                    label: 'Avg Availability',
-                    data: historyData,
-                    borderColor: '#00f2fe',
-                    backgroundColor: 'rgba(0, 242, 254, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                plugins: { legend: { display: false } },
-                scales: { 
-                    y: { display: false, min: 0, max: 100 },
-                    x: { ticks: { color: '#888', font: { size: 10 } } }
-                }
-            }
+        // Custom HTML Icon with CSS Radial Gradient
+        const customIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div style="
+                width: 60px; height: 60px;
+                background: radial-gradient(circle, rgba(${color}, 0.6) 0%, rgba(${color}, 0) 70%);
+                border-radius: 50%;
+                display: flex; justify-content: center; align-items: center;
+                box-shadow: 0 0 15px rgba(${color}, 0.4);
+                cursor: pointer;
+            ">
+                <div style="width: 10px; height: 10px; background: white; border-radius: 50%;"></div>
+            </div>`,
+            iconSize: [60, 60],
+            iconAnchor: [30, 30]
         });
 
-        function updateHistory(newVal) {
-            historyData.shift();
-            historyData.push(newVal);
-            myChart.update();
-        }
-    </script>
+        const marker = L.marker([lat, lng], { icon: customIcon }).addTo(markersLayer);
+        
+        marker.on('click', () => {
+            document.getElementById('infoCard').style.display = 'block';
+            document.getElementById('zoneName').innerText = name;
+            document.getElementById('zoneValue').innerText = availability + '%';
+            document.getElementById('zoneValue').style.color = hexColor;
+        });
+    }
+
+    // 4. Simulation Engine
+    function runSimulation() {
+        markersLayer.clearLayers();
+        const hour = parseInt(document.getElementById('timeSlider').value);
+        const eventType = document.getElementById('eventMode').value;
+        const traffic = parseInt(document.getElementById('trafficSlider').value);
+
+        let totalAvg = 0;
+
+        zones.forEach(z => {
+            let val = z.base;
+
+            // Logic: Night is free, Day is busy
+            if(hour > 8 && hour < 18) val -= 20; 
+            else val += 20;
+
+            // Logic: Events destroy parking at MCG
+            if(eventType === 'mcg' && z.name.includes("MCG")) val -= 60;
+            if(eventType === 'convention' && z.name.includes("Crown")) val -= 50;
+
+            // Logic: High traffic reduces all parking
+            val -= (traffic * 0.3);
+
+            // Clamp and randomize slightly
+            val = Math.max(5, Math.min(95, Math.floor(val + (Math.random() * 10 - 5))));
+            
+            createGradientMarker(z.coords[0], z.coords[1], val, z.name);
+            totalAvg += val;
+        });
+
+        updateChart(Math.round(totalAvg / zones.length));
+    }
+
+    // 5. Utilities
+    function updateLabel(val) {
+        document.getElementById('timeLabel').innerText = val + ":00";
+    }
+
+    // Chart Setup
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['1', '2', '3', '4', '5'],
+            datasets: [{
+                data: [50, 45, 40, 55, 60],
+                borderColor: '#00f2fe', borderWidth: 2, pointRadius: 0, tension: 0.4
+            }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
+    });
+
+    function updateChart(val) {
+        chart.data.datasets[0].data.shift();
+        chart.data.datasets[0].data.push(val);
+        chart.update();
+    }
+
+    // Init
+    runSimulation();
+</script>
 </body>
 </html>
