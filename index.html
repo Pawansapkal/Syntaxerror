@@ -11,20 +11,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --primary-blue: #1e3a8a; /* Navy Blue like screenshot */
-            --bg-gray: #f3f4f6;
-            --alert-bg: #fee2e2;
-            --alert-text: #991b1b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
+       :root {
+    /* Default (Light Mode) */
+    --primary-blue: #0f172a;
+    --bg-gray: #f3f4f6;
+    --card-bg: #ffffff;      /* New variable for cards */
+    --text-main: #111827;    /* New variable for text */
+    --text-sub: #6b7280;
+    --border-color: #e5e7eb;
+    --alert-bg: #fee2e2;
+    --alert-text: #991b1b;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        body { background-color: var(--bg-gray); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+/* Dark Mode Overrides */
+.dark-mode {
+    --primary-blue: #3b82f6; /* Brighter blue for dark mode */
+    --bg-gray: #0b1120;      /* Very dark background */
+    --card-bg: #1e293b;      /* Dark gray cards */
+    --text-main: #f8fafc;    /* White text */
+    --text-sub: #94a3b8;     /* Light gray text */
+    --border-color: #334155;
+    --alert-bg: #450a0a;     /* Dark red background */
+    --alert-text: #fca5a5;   /* Light red text */
+}
+
+body { 
+    background-color: var(--bg-gray); 
+    color: var(--text-main); /* Apply text color globally */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+}
+
+/* IMPORTANT: Update these classes to use the new variables */
+.stat-card, .sidebar, .map-wrapper, .map-overlay-label, .legend, .custom-marker-bubble {
+    background: var(--card-bg) !important; /* Force use of variable */
+    border-color: var(--border-color) !important;
+    color: var(--text-main);
+}
+
+.stat-info .value { color: var(--text-main); }
+.stat-info h3, .stat-info .sub { color: var(--text-sub); }
+.brand-text p { color: #cbd5e1; } /* Lighter text in header */
 
         /* 1. Header */
         header {
