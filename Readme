@@ -36,9 +36,6 @@ How to Run This Project
 Since this is a lightweight web prototype, it is very easy to run:
 
 1.  Clone this repository.
-    ```bash
-    git clone [https://github.com/prabhakar291/Syntaxerror.git](https://github.com/prabhakar291/Syntaxerror.git)
-    ```
 2.  Open the `index.html` file in any web browser (Chrome, Edge, etc.).
 3.  That's it! The dashboard will load instantly.
 
