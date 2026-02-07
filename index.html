@@ -1,19 +1,29 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParkSense Dashboard</title>
+    <title>ParkSense Dashboard - Enhanced</title>
     
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --primary-dark: #0f172a;
+            --primary-blue: #0f2557;
             --bg-gray: #f3f4f6;
             --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --danger: #ef4444;
@@ -21,13 +31,24 @@
             --success: #10b981;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Inter', sans-serif; 
+        }
         
-        body { background-color: var(--bg-gray); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { 
+            background-color: var(--bg-gray); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
 
-        /* --- Header --- */
+        /* ===== HEADER ===== */
         header {
-            background-color: var(--primary-dark);
+            background-color: var(--primary-blue);
             color: white;
             padding: 0.75rem 1.5rem;
             display: flex;
@@ -36,11 +57,53 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 20;
         }
+        
         .brand { display: flex; align-items: center; gap: 12px; }
         .logo-icon { background: rgba(255,255,255,0.15); padding: 8px; border-radius: 8px; display: flex; }
         .brand-text h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.5px; }
         .brand-text p { font-size: 0.75rem; opacity: 0.7; font-weight: 500; }
         
+        /* Header Controls */
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.25rem;
+            border-radius: 8px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary-blue);
+        }
+
         /* City Selector */
         .city-container { position: relative; }
         .city-btn {
@@ -51,15 +114,18 @@
             color: white;
             font-size: 0.85rem;
             cursor: pointer;
-            display: flex; align-items: center; gap: 8px;
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
             transition: background 0.2s;
         }
         .city-btn:hover { background: rgba(255,255,255,0.2); }
         
         .city-menu {
-            display: none; /* Hidden by default */
+            display: none;
             position: absolute;
-            top: 120%; right: 0;
+            top: 120%; 
+            right: 0;
             background: white;
             color: #1f2937;
             width: 200px;
@@ -71,14 +137,22 @@
         }
         .city-menu.show { display: block; }
         .city-menu input {
-            width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px; margin-bottom: 8px; font-size: 0.85rem;
+            width: 100%; 
+            padding: 8px; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 4px; 
+            margin-bottom: 8px; 
+            font-size: 0.85rem;
         }
         .city-option {
-            padding: 8px; border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+            padding: 8px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 0.9rem;
         }
         .city-option:hover { background: #f3f4f6; }
 
-        /* --- Dashboard Layout --- */
+        /* ===== DASHBOARD LAYOUT ===== */
         .dashboard-container {
             flex: 1;
             padding: 1.5rem;
@@ -94,6 +168,7 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
         }
+        
         .stat-card {
             background: white;
             padding: 1.25rem;
@@ -104,121 +179,403 @@
             gap: 1rem;
             border: 1px solid #fff;
         }
-        .stat-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        
+        .stat-icon { 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
+        }
         .stat-icon.yellow { background: #fffbeb; color: #d97706; }
         .stat-icon.red { background: #fef2f2; color: #dc2626; }
         .stat-icon.orange { background: #fff7ed; color: #ea580c; }
         .stat-icon.blue { background: #eff6ff; color: #2563eb; }
+        .stat-icon.green { background: #f0fdf4; color: #16a34a; }
+        .stat-icon.purple { background: #faf5ff; color: #9333ea; }
 
-        .stat-info h3 { font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-        .stat-info .value { font-size: 1.75rem; font-weight: 700; color: #0f172a; line-height: 1; }
-        .stat-info .sub { font-size: 0.85rem; color: #94a3b8; font-weight: 500; margin-left: 4px; }
+        .stat-info h3 { 
+            font-size: 0.75rem; 
+            color: #64748b; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            margin-bottom: 4px; 
+        }
+        .stat-info .value { 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #0f172a; 
+            line-height: 1; 
+        }
+        .stat-info .sub { 
+            font-size: 0.85rem; 
+            color: #94a3b8; 
+            font-weight: 500; 
+            margin-left: 4px; 
+        }
 
         /* Main Content Split */
         .content-split {
             display: grid;
-            grid-template-columns: 2.5fr 1fr; /* Map gets more space */
+            grid-template-columns: 2.5fr 1fr;
             gap: 1.5rem;
             flex: 1;
-            min-height: 0; /* Important for flex/grid nesting */
+            min-height: 0;
         }
 
-        /* --- Map Section --- */
+        /* Tab Panels */
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* ===== MAP SECTION ===== */
         .map-wrapper {
-            background: white; border-radius: 16px; overflow: hidden;
-            box-shadow: var(--card-shadow); position: relative; border: 4px solid white;
-            height: 100%; min-height: 400px;
+            background: white; 
+            border-radius: 16px; 
+            overflow: hidden;
+            box-shadow: var(--card-shadow); 
+            position: relative; 
+            border: 4px solid white;
+            height: 100%; 
+            min-height: 400px;
         }
-        #map { height: 100%; width: 100%; background: #e5e7eb; }
+        #map { 
+            height: 100%; 
+            width: 100%; 
+            background: #e5e7eb; 
+        }
 
-        /* Map Overlays */
         .map-overlay-label {
-            position: absolute; top: 20px; left: 20px; 
-            background: white; padding: 12px 16px;
-            border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 400;
+            position: absolute; 
+            top: 20px; 
+            left: 20px; 
+            background: white; 
+            padding: 12px 16px;
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            z-index: 400;
         }
-        .map-overlay-label h4 { font-size: 0.95rem; font-weight: 800; color: #1f2937; text-transform: uppercase; letter-spacing: 0.5px; }
-        .map-overlay-label span { font-size: 0.75rem; color: #6b7280; font-weight: 600; }
+        .map-overlay-label h4 { 
+            font-size: 0.95rem; 
+            font-weight: 800; 
+            color: #1f2937; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+        .map-overlay-label span { 
+            font-size: 0.75rem; 
+            color: #6b7280; 
+            font-weight: 600; 
+        }
 
         .legend {
-            position: absolute; bottom: 25px; right: 25px; 
-            background: white; padding: 12px;
-            border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 400; width: 220px;
+            position: absolute; 
+            bottom: 25px; 
+            right: 25px; 
+            background: white; 
+            padding: 12px;
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            z-index: 400; 
+            width: 220px;
         }
-        .legend-title { font-size: 0.7rem; color: #6b7280; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; }
-        .gradient-bar { height: 8px; background: linear-gradient(to right, #10b981, #f59e0b, #ef4444); border-radius: 4px; margin-bottom: 6px; }
-        .legend-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: #4b5563; font-weight: 600; }
+        .legend-title { 
+            font-size: 0.7rem; 
+            color: #6b7280; 
+            margin-bottom: 8px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+        }
+        .gradient-bar { 
+            height: 8px; 
+            background: linear-gradient(to right, #10b981, #f59e0b, #ef4444); 
+            border-radius: 4px; 
+            margin-bottom: 6px; 
+        }
+        .legend-labels { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 0.7rem; 
+            color: #4b5563; 
+            font-weight: 600; 
+        }
 
         /* Custom Markers */
         .custom-marker-bubble {
-            background: white; border: 3px solid; border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;
+            background: white; 
+            border: 3px solid; 
+            border-radius: 50%;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+            transition: transform 0.2s;
+            cursor: pointer;
         }
-        .custom-marker-bubble:hover { transform: scale(1.15); z-index: 1000 !important; }
-        .bubble-val { font-size: 13px; font-weight: 800; line-height: 1; color: #333; }
-        .bubble-label { font-size: 7px; font-weight: 700; text-transform: uppercase; color: #666; margin-top: 1px; }
+        .custom-marker-bubble:hover { 
+            transform: scale(1.15); 
+            z-index: 1000 !important; 
+        }
+        .bubble-val { 
+            font-size: 13px; 
+            font-weight: 800; 
+            line-height: 1; 
+            color: #333; 
+        }
+        .bubble-label { 
+            font-size: 7px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            color: #666; 
+            margin-top: 1px; 
+        }
 
-        /* --- Right Sidebar --- */
+        /* ===== SIDEBAR ===== */
         .sidebar {
-            background: white; border-radius: 16px; padding: 1.5rem;
-            box-shadow: var(--card-shadow); border: 1px solid white;
-            display: flex; flex-direction: column; gap: 1.5rem;
+            background: white; 
+            border-radius: 16px; 
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow); 
+            border: 1px solid white;
+            display: flex; 
+            flex-direction: column; 
+            gap: 1.5rem;
             height: 100%;
+            overflow-y: auto;
         }
 
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; }
-        .toggle-label { font-weight: 700; color: #1f2937; display: flex; align-items: center; gap: 10px; font-size: 1rem; }
+        .toggle-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .toggle-label { 
+            font-weight: 700; 
+            color: #1f2937; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-size: 1rem; 
+        }
         
         /* Toggle Switch */
-        .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: var(--primary-dark); }
-        input:checked + .slider:before { transform: translateX(22px); }
+        .switch { 
+            position: relative; 
+            display: inline-block; 
+            width: 48px; 
+            height: 26px; 
+        }
+        .switch input { 
+            opacity: 0; 
+            width: 0; 
+            height: 0; 
+        }
+        .slider { 
+            position: absolute; 
+            cursor: pointer; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background-color: #cbd5e1; 
+            transition: .4s; 
+            border-radius: 34px; 
+        }
+        .slider:before { 
+            position: absolute; 
+            content: ""; 
+            height: 20px; 
+            width: 20px; 
+            left: 3px; 
+            bottom: 3px; 
+            background-color: white; 
+            transition: .4s; 
+            border-radius: 50%; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+        }
+        input:checked + .slider { 
+            background-color: var(--primary-blue); 
+        }
+        input:checked + .slider:before { 
+            transform: translateX(22px); 
+        }
 
-        /* Simulate Button */
-        #simBtn {
-            width: 100%; padding: 12px;
-            background: white; border: 1px solid #ef4444; color: #ef4444;
-            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+        /* Buttons */
+        .sim-btn {
+            width: 100%; 
+            padding: 12px;
+            background: white; 
+            border: 1px solid #ef4444; 
+            color: #ef4444;
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 0.9rem;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
             transition: all 0.2s;
         }
-        #simBtn:hover { background: #fef2f2; }
-        #simBtn.active { background: #ef4444; color: white; border-color: #ef4444; }
+        .sim-btn:hover { background: #fef2f2; }
+        .sim-btn.active { 
+            background: #ef4444; 
+            color: white; 
+            border-color: #ef4444; 
+        }
 
-        /* Insight Progress Bars */
-        .insight-section h4 { font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* Insight Section */
+        .insight-section h4 { 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            color: #64748b; 
+            margin-bottom: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
         .insight-item { margin-bottom: 16px; }
-        .insight-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: #334155; font-weight: 600; }
+        .insight-header { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 0.85rem; 
+            margin-bottom: 6px; 
+            color: #334155; 
+            font-weight: 600; 
+        }
         .insight-status { font-weight: 700; }
         .status-high { color: #dc2626; }
         .status-critical { color: #b91c1c; }
         .status-med { color: #d97706; }
+        .status-low { color: #10b981; }
 
-        .progress-bg { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 4px; width: 0; transition: width 1s ease-out; }
+        .progress-bg { 
+            height: 8px; 
+            background: #e2e8f0; 
+            border-radius: 4px; 
+            overflow: hidden; 
+        }
+        .progress-fill { 
+            height: 100%; 
+            border-radius: 4px; 
+            width: 0; 
+            transition: width 1s ease-out; 
+        }
 
-        .rec-box { margin-top: auto; padding-top: 1rem; border-top: 1px solid #e2e8f0; }
-        .rec-box p { font-size: 0.8rem; color: #475569; line-height: 1.5; }
+        .rec-box { 
+            margin-top: auto; 
+            padding-top: 1rem; 
+            border-top: 1px solid #e2e8f0; 
+        }
+        .rec-box p { 
+            font-size: 0.8rem; 
+            color: #475569; 
+            line-height: 1.5; 
+        }
         .rec-box strong { color: #1e293b; }
 
-        /* Animations */
-        .heat-glow { filter: blur(35px); opacity: 0.6; animation: pulse 4s infinite; }
-        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 0.7; } 100% { opacity: 0.4; } }
+        /* ===== ANALYTICS SECTION ===== */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
 
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .chart-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+        }
+
+        /* Zone Pills */
+        .zone-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .zone-pill {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .zone-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .zone-pill.active {
+            border-color: var(--primary-blue);
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .zone-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Animations */
+        .heat-glow { 
+            filter: blur(35px); 
+            opacity: 0.6; 
+            animation: pulse 4s infinite; 
+        }
+        @keyframes pulse { 
+            0% { opacity: 0.4; } 
+            50% { opacity: 0.7; } 
+            100% { opacity: 0.4; } 
+        }
+
+        /* Responsive */
         @media (max-width: 1024px) {
             .stats-grid { grid-template-columns: 1fr 1fr; }
             .content-split { grid-template-columns: 1fr; }
             .sidebar { height: auto; }
             #map { height: 350px; }
+            .analytics-grid { grid-template-columns: 1fr; }
+            .tab-nav { 
+                overflow-x: auto; 
+                flex-wrap: nowrap;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- ===== HEADER ===== -->
     <header>
         <div class="brand">
             <div class="logo-icon"><i data-lucide="map-pin" color="white" size="20"></i></div>
@@ -228,23 +585,49 @@
             </div>
         </div>
 
-        <div class="city-container">
-            <button onclick="toggleCityMenu()" class="city-btn">
-                <i data-lucide="globe" size="14"></i> 
-                <span id="currentCity">Melbourne</span>
-                <i data-lucide="chevron-down" size="14"></i>
-            </button>
-            <div id="cityMenu" class="city-menu">
-                <input type="text" id="citySearch" placeholder="Search city..." onkeyup="filterCity()" />
-                <div class="city-option" onclick="selectCity('Melbourne')">Melbourne</div>
-                <div class="city-option" onclick="selectCity('Sydney')">Sydney</div>
-                <div class="city-option" onclick="selectCity('Mumbai')">Mumbai</div>
-                <div class="city-option" onclick="selectCity('New York')">New York</div>
+        <div class="header-controls">
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="overview">
+                    <i data-lucide="zap" size="16"></i>
+                    Overview
+                </button>
+                <button class="tab-btn" data-tab="predictions">
+                    <i data-lucide="brain" size="16"></i>
+                    Predictions
+                </button>
+                <button class="tab-btn" data-tab="analytics">
+                    <i data-lucide="bar-chart-3" size="16"></i>
+                    Analytics
+                </button>
+                <button class="tab-btn" data-tab="events">
+                    <i data-lucide="calendar-days" size="16"></i>
+                    Events
+                </button>
+            </div>
+
+            <!-- City Selector -->
+            <div class="city-container">
+                <button onclick="toggleCityMenu()" class="city-btn">
+                    <i data-lucide="globe" size="14"></i> 
+                    <span id="currentCity">Melbourne</span>
+                    <i data-lucide="chevron-down" size="14"></i>
+                </button>
+                <div id="cityMenu" class="city-menu">
+                    <input type="text" id="citySearch" placeholder="Search city..." onkeyup="filterCity()" />
+                    <div class="city-option" onclick="selectCity('Melbourne')">Melbourne</div>
+                    <div class="city-option" onclick="selectCity('Sydney')">Sydney</div>
+                    <div class="city-option" onclick="selectCity('Mumbai')">Mumbai</div>
+                    <div class="city-option" onclick="selectCity('New York')">New York</div>
+                </div>
             </div>
         </div>
     </header>
 
+    <!-- ===== DASHBOARD CONTAINER ===== -->
     <div class="dashboard-container">
+        
+        <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon yellow"><i data-lucide="bar-chart-2"></i></div>
@@ -276,90 +659,273 @@
             </div>
         </div>
 
-        <div class="content-split">
-            
-            <div class="map-wrapper">
-                <div id="map"></div>
-                <div class="map-overlay-label">
-                    <h4 id="mapLabel">Melbourne</h4>
-                    <span>Parking Stress Heatmap</span>
+        <!-- TAB PANEL: OVERVIEW -->
+        <div class="tab-panel active" id="overview-panel">
+            <div class="content-split">
+                
+                <!-- Map -->
+                <div class="map-wrapper">
+                    <div id="map"></div>
+                    <div class="map-overlay-label">
+                        <h4 id="mapLabel">Melbourne</h4>
+                        <span>Parking Stress Heatmap</span>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-title">Stress Intensity</div>
+                        <div class="gradient-bar"></div>
+                        <div class="legend-labels">
+                            <span>Available</span>
+                            <span>Filling</span>
+                            <span>Full</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="legend">
-                    <div class="legend-title">Stress Intensity</div>
-                    <div class="gradient-bar"></div>
-                    <div class="legend-labels">
-                        <span>Available</span>
-                        <span>Filling</span>
-                        <span>Full</span>
+
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="toggle-row">
+                        <div class="toggle-label">
+                            <i data-lucide="shield-alert" size="20" color="#1e293b"></i>
+                            Authority Insight Mode
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="sim-btn" id="simBtn" onclick="toggleSimulation()">
+                        <i data-lucide="zap" size="16"></i> Simulate Event
+                    </button>
+
+                    <div class="insight-section">
+                        <h4>Why is PSI High?</h4>
+                        
+                        <div class="insight-item">
+                            <div class="insight-header">
+                                <span>Peak office hours</span>
+                                <span class="insight-status status-high">High</span>
+                            </div>
+                            <div class="progress-bg"><div class="progress-fill" style="width: 75%; background: #ef4444;"></div></div>
+                        </div>
+
+                        <div class="insight-item">
+                            <div class="insight-header">
+                                <span>Heavy traffic inflow</span>
+                                <span class="insight-status status-high">High</span>
+                            </div>
+                            <div class="progress-bg"><div class="progress-fill" style="width: 65%; background: #ef4444;"></div></div>
+                        </div>
+
+                        <div class="insight-item">
+                            <div class="insight-header">
+                                <span>Event nearby</span>
+                                <span class="insight-status status-low" id="event-status-text">Low</span>
+                            </div>
+                            <div class="progress-bg"><div class="progress-fill" id="event-bar" style="width: 10%; background: #10b981;"></div></div>
+                        </div>
+                        
+                        <div class="insight-item">
+                            <div class="insight-header">
+                                <span>Two-wheeler density</span>
+                                <span class="insight-status status-med">Med</span>
+                            </div>
+                            <div class="progress-bg"><div class="progress-fill" style="width: 45%; background: #f59e0b;"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="rec-box">
+                        <p><strong>Recommendation:</strong> Divert traffic from CG Road to Riverfront Parking A & B to alleviate congestion.</p>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+
+        <!-- TAB PANEL: PREDICTIONS -->
+        <div class="tab-panel" id="predictions-panel">
+            <div class="zone-pills" id="zonePills"></div>
+            
+            <div class="analytics-grid">
+                <div class="chart-card" style="grid-column: span 2;">
+                    <h3>
+                        <i data-lucide="trending-up" size="20"></i>
+                        Availability Prediction (Next 90 min)
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="predictionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>
+                        <i data-lucide="gauge" size="20"></i>
+                        Zone Details
+                    </h3>
+                    <div id="zoneDetails"></div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>
+                        <i data-lucide="alert-triangle" size="20"></i>
+                        AI Insights
+                    </h3>
+                    <div id="aiInsights"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB PANEL: ANALYTICS -->
+        <div class="tab-panel" id="analytics-panel">
+            <div class="analytics-grid">
+                <div class="chart-card">
+                    <h3>
+                        <i data-lucide="clock" size="20"></i>
+                        Hourly Pattern
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="hourlyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>
+                        <i data-lucide="calendar" size="20"></i>
+                        Daily Pattern
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>
+                        <i data-lucide="map-pin" size="20"></i>
+                        Zone Comparison
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="zoneChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>
+                        <i data-lucide="activity" size="20"></i>
+                        Traffic Flow
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB PANEL: EVENTS -->
+        <div class="tab-panel" id="events-panel">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i data-lucide="calendar"></i></div>
+                    <div class="stat-info">
+                        <h3>Upcoming Events</h3>
+                        <span class="value">5</span>
+                        <span class="sub">Next 7 days</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i data-lucide="alert-triangle"></i></div>
+                    <div class="stat-info">
+                        <h3>Critical Impact</h3>
+                        <span class="value">2</span>
+                        <span class="sub">Events</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i data-lucide="map-pin"></i></div>
+                    <div class="stat-info">
+                        <h3>Zones Affected</h3>
+                        <span class="value">8</span>
+                        <span class="sub">of 12 total</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i data-lucide="zap"></i></div>
+                    <div class="stat-info">
+                        <h3>Max Demand Surge</h3>
+                        <span class="value">165%</span>
+                        <span class="sub">AFL Grand Final</span>
                     </div>
                 </div>
             </div>
 
-            <aside class="sidebar">
-                <div class="toggle-row">
-                    <div class="toggle-label">
-                        <i data-lucide="shield-alert" size="20" color="#1e293b"></i>
-                        Authority Insight Mode
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-                <button id="simBtn" onclick="toggleSimulation()">
-                    <i data-lucide="zap" size="16"></i> Simulate Event
-                </button>
-
-                <div class="insight-section">
-                    <h4>Why is PSI High?</h4>
-                    
-                    <div class="insight-item">
-                        <div class="insight-header">
-                            <span>Peak office hours</span>
-                            <span class="insight-status status-high">High</span>
-                        </div>
-                        <div class="progress-bg"><div class="progress-fill" style="width: 75%; background: #ef4444;"></div></div>
-                    </div>
-
-                    <div class="insight-item">
-                        <div class="insight-header">
-                            <span>Heavy traffic inflow</span>
-                            <span class="insight-status status-high">High</span>
-                        </div>
-                        <div class="progress-bg"><div class="progress-fill" style="width: 65%; background: #ef4444;"></div></div>
-                    </div>
-
-                    <div class="insight-item">
-                        <div class="insight-header">
-                            <span>Event nearby</span>
-                            <span class="insight-status status-critical" id="event-status-text">Low</span>
-                        </div>
-                        <div class="progress-bg"><div class="progress-fill" id="event-bar" style="width: 10%; background: #10b981;"></div></div>
-                    </div>
-                    
-                    <div class="insight-item">
-                        <div class="insight-header">
-                            <span>Two-wheeler density</span>
-                            <span class="insight-status status-med">Med</span>
-                        </div>
-                        <div class="progress-bg"><div class="progress-fill" style="width: 45%; background: #f59e0b;"></div></div>
+            <div class="analytics-grid" style="margin-top: 1.5rem;">
+                <div class="chart-card" style="grid-column: span 2;">
+                    <h3>
+                        <i data-lucide="trending-up" size="20"></i>
+                        Event Impact Forecast
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="eventChart"></canvas>
                     </div>
                 </div>
 
-                <div class="rec-box">
-                    <p><strong>Recommendation:</strong> Divert traffic from CG Road to Riverfront Parking A & B to alleviate congestion.</p>
+                <div class="chart-card" style="grid-column: span 2;">
+                    <h3>
+                        <i data-lucide="list" size="20"></i>
+                        Event List
+                    </h3>
+                    <div id="eventList"></div>
                 </div>
-            </aside>
-
+            </div>
         </div>
+
     </div>
 
     <script>
+        // ===== DATA MODELS =====
+        const parkingZones = [
+            { id: 'fed-square', name: "Fed Square", coords: [-37.8180, 144.9691], currentAvail: 65, predicted30: 52, stressIndex: 42, totalSpots: 450, color: '#10b981' },
+            { id: 'queen-vic', name: "Queen Vic Mkt", coords: [-37.8076, 144.9568], currentAvail: 58, predicted30: 45, stressIndex: 48, totalSpots: 380, color: '#10b981' },
+            { id: 'crown-casino', name: "Crown Casino", coords: [-37.8236, 144.9583], currentAvail: 12, predicted30: 8, stressIndex: 92, totalSpots: 600, color: '#ef4444' },
+            { id: 'docklands', name: "Docklands", coords: [-37.8183, 144.9450], currentAvail: 18, predicted30: 12, stressIndex: 85, totalSpots: 520, color: '#ef4444' },
+            { id: 'southbank', name: "Southbank", coords: [-37.8220, 144.9650], currentAvail: 22, predicted30: 18, stressIndex: 78, totalSpots: 400, color: '#dc2626' },
+            { id: 'mcg', name: "MCG Area", coords: [-37.8200, 144.9834], currentAvail: 35, predicted30: 25, stressIndex: 65, totalSpots: 800, color: '#f59e0b' }
+        ];
+
+        const hourlyPattern = [
+            { hour: '6AM', occupancy: 25 }, { hour: '7AM', occupancy: 38 }, { hour: '8AM', occupancy: 62 },
+            { hour: '9AM', occupancy: 78 }, { hour: '10AM', occupancy: 82 }, { hour: '11AM', occupancy: 85 },
+            { hour: '12PM', occupancy: 88 }, { hour: '1PM', occupancy: 86 }, { hour: '2PM', occupancy: 82 },
+            { hour: '3PM', occupancy: 75 }, { hour: '4PM', occupancy: 70 }, { hour: '5PM', occupancy: 85 },
+            { hour: '6PM', occupancy: 90 }, { hour: '7PM', occupancy: 75 }, { hour: '8PM', occupancy: 65 },
+            { hour: '9PM', occupancy: 52 }, { hour: '10PM', occupancy: 42 }
+        ];
+
+        const dailyPattern = [
+            { day: 'Mon', avgOccupancy: 78 }, { day: 'Tue', avgOccupancy: 82 }, 
+            { day: 'Wed', avgOccupancy: 80 }, { day: 'Thu', avgOccupancy: 85 },
+            { day: 'Fri', avgOccupancy: 92 }, { day: 'Sat', avgOccupancy: 88 }, { day: 'Sun', avgOccupancy: 65 }
+        ];
+
+        const cityEvents = [
+            { name: 'AFL Grand Final', date: 'Sep 30', type: 'sports', predictedSurge: 165, parkingImpact: 'critical', affectedZones: ['mcg', 'southbank'] },
+            { name: 'Night Market', date: 'Oct 2', type: 'market', predictedSurge: 82, parkingImpact: 'high', affectedZones: ['queen-vic'] },
+            { name: 'Music Festival', date: 'Oct 5', type: 'concert', predictedSurge: 125, parkingImpact: 'critical', affectedZones: ['fed-square', 'southbank'] },
+            { name: 'Tech Conference', date: 'Oct 7', type: 'conference', predictedSurge: 68, parkingImpact: 'medium', affectedZones: ['docklands'] },
+            { name: 'Food Festival', date: 'Oct 10', type: 'festival', predictedSurge: 95, parkingImpact: 'high', affectedZones: ['crown-casino', 'southbank'] }
+        ];
+
+        // ===== STATE =====
+        let currentTab = 'overview';
+        let isSimulating = false;
+        let selectedZone = parkingZones[0].id;
+        let map, eventLayer, markers = {};
+        let charts = {};
+
+        // ===== INITIALIZATION =====
         lucide.createIcons();
 
-        // 1. Map Initialization
-        const map = L.map('map', {
+        // Initialize Map
+        map = L.map('map', {
             zoomControl: false,
             attributionControl: false
         }).setView([-37.8136, 144.9631], 14);
@@ -367,39 +933,86 @@
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
         L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-        // 2. Data & Rendering
-        const parkingSpots = [
-            { name: "Fed Square", coords: [-37.8180, 144.9691], avail: 65, color: '#10b981' }, 
-            { name: "Queen Vic Mkt", coords: [-37.8076, 144.9568], avail: 58, color: '#10b981' }, 
-            { name: "Crown Casino", coords: [-37.8236, 144.9583], avail: 12, color: '#ef4444' }, 
-            { name: "Docklands", coords: [-37.8183, 144.9450], avail: 18, color: '#ef4444' }, 
-            { name: "Southbank", coords: [-37.8220, 144.9650], avail: 22, color: '#dc2626' } 
+        // Add heat blobs
+        const heatBlobs = [
+            { coords: [-37.8220, 144.9650], color: '#ef4444', radius: 800 },
+            { coords: [-37.8076, 144.9568], color: '#f59e0b', radius: 600 },
+            { coords: [-37.8102, 144.9628], color: '#f59e0b', radius: 500 }
         ];
 
-        // Heatmap Layers
-        const heatLayer1 = L.circle([-37.8220, 144.9650], { radius: 800, stroke: false, fillColor: '#ef4444', fillOpacity: 0.4, className: 'heat-glow' }).addTo(map);
-        const heatLayer2 = L.circle([-37.8076, 144.9568], { radius: 600, stroke: false, fillColor: '#f59e0b', fillOpacity: 0.4, className: 'heat-glow' }).addTo(map);
-        
-        // Event Heatmap (Hidden initially)
-        let eventLayer = L.circle([-37.8200, 144.9834], { radius: 1200, stroke: false, fillColor: '#7f1d1d', fillOpacity: 0.0, className: 'heat-glow' }).addTo(map);
+        heatBlobs.forEach(blob => {
+            L.circle(blob.coords, { 
+                radius: blob.radius, 
+                stroke: false, 
+                fillColor: blob.color, 
+                fillOpacity: 0.4, 
+                className: 'heat-glow' 
+            }).addTo(map);
+        });
 
-        // Render Markers
-        parkingSpots.forEach(spot => {
+        // Event heatmap (hidden initially)
+        eventLayer = L.circle([-37.8200, 144.9834], { 
+            radius: 1200, 
+            stroke: false, 
+            fillColor: '#7f1d1d', 
+            fillOpacity: 0.0, 
+            className: 'heat-glow' 
+        }).addTo(map);
+
+        // Add parking zone markers
+        parkingZones.forEach(zone => {
             const customIcon = L.divIcon({
                 className: 'custom-pin',
-                html: `<div class="custom-marker-bubble" style="width: 44px; height: 44px; border-color: ${spot.color}">
-                        <span class="bubble-val">${spot.avail}%</span>
+                html: `<div class="custom-marker-bubble" style="width: 44px; height: 44px; border-color: ${zone.color}">
+                        <span class="bubble-val">${zone.currentAvail}%</span>
                         <span class="bubble-label">Avail</span>
                        </div>`,
                 iconSize: [44, 44],
                 iconAnchor: [22, 22]
             });
-            L.marker(spot.coords, { icon: customIcon }).addTo(map);
+            const marker = L.marker(zone.coords, { icon: customIcon }).addTo(map);
+            marker.on('click', () => selectZone(zone.id));
+            markers[zone.id] = marker;
         });
 
-        // 3. Logic Functions
-        let isSimulating = false;
-        
+        // ===== TAB SWITCHING =====
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tab = this.dataset.tab;
+                switchTab(tab);
+            });
+        });
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tab) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(`${tab}-panel`).classList.add('active');
+            
+            // Initialize charts based on tab
+            if (tab === 'predictions') {
+                initPredictionsPanel();
+            } else if (tab === 'analytics') {
+                initAnalyticsCharts();
+            } else if (tab === 'events') {
+                initEventsPanel();
+            }
+            
+            lucide.createIcons();
+        }
+
+        // ===== SIMULATION =====
         function toggleSimulation() {
             const btn = document.getElementById('simBtn');
             const psiVal = document.getElementById('val-psi');
@@ -409,47 +1022,41 @@
             isSimulating = !isSimulating;
 
             if (isSimulating) {
-                // UI: Active State
                 btn.classList.add('active');
-                btn.innerHTML = `<i data-lucide="loader" class="animate-spin"></i> Event Live...`;
+                btn.innerHTML = `<i data-lucide="loader"></i> Event Live...`;
                 
-                // Stats Update
                 psiVal.innerText = "89";
                 psiVal.style.color = "#dc2626";
 
-                // Sidebar Update
                 eventBar.style.width = "95%";
                 eventBar.style.background = "#dc2626";
                 eventText.innerText = "Critical";
                 eventText.style.color = "#b91c1c";
+                eventText.className = "insight-status status-critical";
 
-                // Map Update (Fly to MCG stadium area)
                 eventLayer.setStyle({ fillOpacity: 0.6 });
                 map.flyTo([-37.8200, 144.9834], 14, { duration: 1.5 });
 
             } else {
-                // UI: Reset State
                 btn.classList.remove('active');
                 btn.innerHTML = `<i data-lucide="zap"></i> Simulate Event`;
                 
-                // Stats Reset
                 psiVal.innerText = "58";
                 psiVal.style.color = "#ea580c";
 
-                // Sidebar Reset
                 eventBar.style.width = "10%";
                 eventBar.style.background = "#10b981";
                 eventText.innerText = "Low";
                 eventText.style.color = "#10b981";
+                eventText.className = "insight-status status-low";
 
-                // Map Reset
                 eventLayer.setStyle({ fillOpacity: 0.0 });
                 map.flyTo([-37.8136, 144.9631], 14, { duration: 1.5 });
             }
             lucide.createIcons();
         }
 
-        /* City Selector Logic */
+        // ===== CITY SELECTOR =====
         function toggleCityMenu() {
             document.getElementById('cityMenu').classList.toggle('show');
         }
@@ -458,10 +1065,17 @@
             document.getElementById('currentCity').innerText = city;
             document.getElementById('mapLabel').innerText = city;
             document.getElementById('cityMenu').classList.remove('show');
-            // Mock map move
-            if(city === 'Sydney') map.setView([-33.8688, 151.2093], 14);
-            if(city === 'Mumbai') map.setView([19.0760, 72.8777], 14);
-            if(city === 'Melbourne') map.setView([-37.8136, 144.9631], 14);
+            
+            const cityCoords = {
+                'Melbourne': [-37.8136, 144.9631],
+                'Sydney': [-33.8688, 151.2093],
+                'Mumbai': [19.0760, 72.8777],
+                'New York': [40.7128, -74.0060]
+            };
+            
+            if (cityCoords[city]) {
+                map.setView(cityCoords[city], 14);
+            }
         }
 
         function filterCity() {
@@ -472,11 +1086,7 @@
             
             for (let i = 0; i < options.length; i++) {
                 const txtValue = options[i].textContent || options[i].innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    options[i].style.display = "";
-                } else {
-                    options[i].style.display = "none";
-                }
+                options[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
             }
         }
 
@@ -486,6 +1096,265 @@
                 document.getElementById('cityMenu').classList.remove('show');
             }
         }
+
+        // ===== ZONE SELECTION =====
+        function selectZone(zoneId) {
+            selectedZone = zoneId;
+            const zone = parkingZones.find(z => z.id === zoneId);
+            if (zone) {
+                map.flyTo(zone.coords, 15, { duration: 1 });
+                if (currentTab === 'predictions') {
+                    initPredictionsPanel();
+                }
+            }
+        }
+
+        // ===== PREDICTIONS PANEL =====
+        function initPredictionsPanel() {
+            // Zone pills
+            const pillsContainer = document.getElementById('zonePills');
+            pillsContainer.innerHTML = parkingZones.map(zone => `
+                <button class="zone-pill ${zone.id === selectedZone ? 'active' : ''}" 
+                        onclick="selectZone('${zone.id}')"
+                        style="${zone.id !== selectedZone ? `background: white; color: #4b5563;` : ''}">
+                    <span class="zone-dot" style="background: ${zone.color};"></span>
+                    ${zone.name}
+                </button>
+            `).join('');
+
+            // Prediction chart
+            const zone = parkingZones.find(z => z.id === selectedZone);
+            const ctx = document.getElementById('predictionChart');
+            
+            if (charts.prediction) {
+                charts.prediction.destroy();
+            }
+
+            const timeSlots = [];
+            let availability = zone.currentAvail;
+            for (let i = 0; i <= 90; i += 10) {
+                availability -= Math.random() * 8;
+                timeSlots.push({ time: `+${i}min`, availability: Math.max(5, availability) });
+            }
+
+            charts.prediction = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timeSlots.map(t => t.time),
+                    datasets: [{
+                        label: 'Predicted Availability %',
+                        data: timeSlots.map(t => t.availability),
+                        borderColor: zone.color,
+                        backgroundColor: zone.color + '20',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+
+            // Zone details
+            document.getElementById('zoneDetails').innerHTML = `
+                <div style="padding: 1rem;">
+                    <div style="margin-bottom: 1rem;">
+                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Current Status</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: ${zone.color};">${zone.currentAvail}%</div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Total Spots</div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">${zone.totalSpots}</div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Stress Index</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: ${zone.stressIndex > 70 ? '#ef4444' : '#f59e0b'};">${zone.stressIndex}/100</div>
+                    </div>
+                </div>
+            `;
+
+            // AI Insights
+            document.getElementById('aiInsights').innerHTML = `
+                <div style="padding: 1rem;">
+                    <div style="padding: 0.75rem; background: #fef2f2; border-left: 3px solid #ef4444; border-radius: 6px; margin-bottom: 1rem;">
+                        <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.25rem;">⚠️ High Demand Alert</div>
+                        <div style="font-size: 0.85rem; color: #7f1d1d;">Expect ${Math.round((zone.currentAvail - zone.predicted30) * 1.5)}% drop in next 30 minutes</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 6px;">
+                        <div style="font-weight: 600; color: #92400e; margin-bottom: 0.25rem;">💡 Recommendation</div>
+                        <div style="font-size: 0.85rem; color: #78350f;">Consider nearby alternatives with better availability</div>
+                    </div>
+                </div>
+            `;
+
+            lucide.createIcons();
+        }
+
+        // ===== ANALYTICS CHARTS =====
+        function initAnalyticsCharts() {
+            // Hourly chart
+            if (charts.hourly) charts.hourly.destroy();
+            charts.hourly = new Chart(document.getElementById('hourlyChart'), {
+                type: 'line',
+                data: {
+                    labels: hourlyPattern.map(h => h.hour),
+                    datasets: [{
+                        label: 'Occupancy %',
+                        data: hourlyPattern.map(h => h.occupancy),
+                        borderColor: '#3b82f6',
+                        backgroundColor: '#3b82f620',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+
+            // Daily chart
+            if (charts.daily) charts.daily.destroy();
+            charts.daily = new Chart(document.getElementById('dailyChart'), {
+                type: 'bar',
+                data: {
+                    labels: dailyPattern.map(d => d.day),
+                    datasets: [{
+                        label: 'Avg Occupancy %',
+                        data: dailyPattern.map(d => d.avgOccupancy),
+                        backgroundColor: dailyPattern.map(d => d.avgOccupancy > 85 ? '#ef4444' : '#10b981')
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+
+            // Zone comparison chart
+            if (charts.zone) charts.zone.destroy();
+            charts.zone = new Chart(document.getElementById('zoneChart'), {
+                type: 'radar',
+                data: {
+                    labels: parkingZones.map(z => z.name),
+                    datasets: [{
+                        label: 'Availability',
+                        data: parkingZones.map(z => z.currentAvail),
+                        borderColor: '#10b981',
+                        backgroundColor: '#10b98120'
+                    }, {
+                        label: 'Stress Index',
+                        data: parkingZones.map(z => z.stressIndex),
+                        borderColor: '#ef4444',
+                        backgroundColor: '#ef444420'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { beginAtZero: true, max: 100 } }
+                }
+            });
+
+            // Traffic flow chart
+            if (charts.traffic) charts.traffic.destroy();
+            const trafficData = [
+                { route: 'CG Road', inflow: 420, outflow: 280 },
+                { route: 'Riverfront', inflow: 350, outflow: 320 },
+                { route: 'SG Highway', inflow: 480, outflow: 380 },
+                { route: 'Ashram Road', inflow: 390, outflow: 310 }
+            ];
+            charts.traffic = new Chart(document.getElementById('trafficChart'), {
+                type: 'bar',
+                data: {
+                    labels: trafficData.map(t => t.route),
+                    datasets: [{
+                        label: 'Inflow',
+                        data: trafficData.map(t => t.inflow),
+                        backgroundColor: '#3b82f6'
+                    }, {
+                        label: 'Outflow',
+                        data: trafficData.map(t => t.outflow),
+                        backgroundColor: '#10b981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        // ===== EVENTS PANEL =====
+        function initEventsPanel() {
+            // Event chart
+            if (charts.event) charts.event.destroy();
+            charts.event = new Chart(document.getElementById('eventChart'), {
+                type: 'bar',
+                data: {
+                    labels: cityEvents.map(e => e.name),
+                    datasets: [{
+                        label: 'Demand Surge %',
+                        data: cityEvents.map(e => e.predictedSurge),
+                        backgroundColor: cityEvents.map(e => 
+                            e.parkingImpact === 'critical' ? '#ef4444' : 
+                            e.parkingImpact === 'high' ? '#f59e0b' : '#10b981'
+                        )
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // Event list
+            const eventIcons = {
+                concert: 'music',
+                sports: 'trophy',
+                festival: 'party-popper',
+                market: 'shopping-bag',
+                conference: 'presentation'
+            };
+
+            document.getElementById('eventList').innerHTML = cityEvents.map(event => `
+                <div style="padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="background: ${event.parkingImpact === 'critical' ? '#fef2f2' : '#fffbeb'}; padding: 0.75rem; border-radius: 8px;">
+                            <i data-lucide="${eventIcons[event.type] || 'calendar'}" size="20" style="color: ${event.parkingImpact === 'critical' ? '#dc2626' : '#d97706'};"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; color: #1f2937;">${event.name}</div>
+                            <div style="font-size: 0.85rem; color: #64748b;">${event.date} • ${event.type}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 700; font-size: 1.25rem; color: ${event.parkingImpact === 'critical' ? '#dc2626' : '#d97706'};">+${event.predictedSurge}%</div>
+                        <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase;">${event.parkingImpact}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Initialize icons
+        lucide.createIcons();
     </script>
+
 </body>
 </html>
