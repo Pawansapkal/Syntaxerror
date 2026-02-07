@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-      <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ParkSense | Melbourne</title>
     
@@ -11,170 +11,158 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-    :root {
-        --primary-blue: #0f172a; /* Melbourne Dark Blue */
-        --bg-gray: #f3f4f6;
-        --alert-bg: #fee2e2;
-        --alert-text: #991b1b;
-        --success: #10b981;
-        --danger: #ef4444;
-        --warning: #f59e0b;
-        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
+        :root {
+            --primary-blue: #0f172a; /* Melbourne Dark Blue */
+            --bg-gray: #f3f4f6;
+            --alert-bg: #fee2e2;
+            --alert-text: #991b1b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-    
-    body { background-color: var(--bg-gray); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { background-color: var(--bg-gray); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-    /* Header */
-    header {
-        background-color: var(--primary-blue);
-        color: white;
-        padding: 0.75rem 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .logo-icon { background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; }
-    .brand-text h1 { font-size: 1.1rem; font-weight: 700; }
-    .brand-text p { font-size: 0.75rem; opacity: 0.8; }
-    
-    .header-controls { display: flex; gap: 10px; }
-    .control-btn {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
-        padding: 6px 12px;
-        border-radius: 6px;
-        color: white;
-        font-size: 0.85rem;
-        display: flex; align-items: center; gap: 8px;
-        cursor: pointer;
-    }
+        /* Header */
+        header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; }
+        .brand-text h1 { font-size: 1.1rem; font-weight: 700; }
+        .brand-text p { font-size: 0.75rem; opacity: 0.8; }
+        
+        .header-controls { display: flex; gap: 10px; }
+        .control-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.85rem;
+            display: flex; align-items: center; gap: 8px;
+            cursor: pointer;
+        }
 
-    /* Dashboard Layout */
-    .dashboard-container {
-        flex: 1;
-        padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        overflow-y: auto;
-    }
+        /* Dashboard Layout */
+        .dashboard-container {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+        }
 
-    /* Stats Grid */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-    }
-    .stat-card {
-        background: white;
-        padding: 1rem;
-        border-radius: 12px;
-        box-shadow: var(--card-shadow);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-    .stat-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-    .stat-icon.yellow { background: #fef3c7; color: #d97706; }
-    .stat-icon.red { background: #fee2e2; color: #dc2626; }
-    .stat-icon.orange { background: #ffedd5; color: #ea580c; }
-    .stat-icon.blue { background: #dbeafe; color: #2563eb; }
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .stat-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .stat-icon.yellow { background: #fef3c7; color: #d97706; }
+        .stat-icon.red { background: #fee2e2; color: #dc2626; }
+        .stat-icon.orange { background: #ffedd5; color: #ea580c; }
+        .stat-icon.blue { background: #dbeafe; color: #2563eb; }
 
-    .stat-info h3 { font-size: 0.75rem; color: #6b7280; font-weight: 500; }
-    .stat-info .value { font-size: 1.5rem; font-weight: 700; color: #111827; }
-    .stat-info .sub { font-size: 0.85rem; color: #6b7280; font-weight: 400; margin-left: 4px; }
+        .stat-info h3 { font-size: 0.75rem; color: #6b7280; font-weight: 500; }
+        .stat-info .value { font-size: 1.5rem; font-weight: 700; color: #111827; }
+        .stat-info .sub { font-size: 0.85rem; color: #6b7280; font-weight: 400; margin-left: 4px; }
 
-    /* Alert Banner (Kept in CSS just in case, but hidden if you removed HTML) */
-    .alert-banner {
-        background-color: var(--alert-bg);
-        border: 1px solid #fecaca;
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        color: var(--alert-text);
-    }
-    .alert-content { display: flex; align-items: center; gap: 12px; }
-    .alert-text strong { display: block; font-size: 0.95rem; }
-    .alert-text span { font-size: 0.85rem; opacity: 0.9; }
-    
-    .simulate-btn {
-        background: transparent; border: 1px solid #ef4444; color: #ef4444;
-        padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
-        cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;
-    }
-    .simulate-btn:hover { background: #ef4444; color: white; }
-    .simulate-btn.active { background: #ef4444; color: white; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        /* Map Section */
+        .content-split { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; flex: 1; min-height: 400px; }
+        .map-wrapper {
+            background: white; border-radius: 12px; overflow: hidden;
+            box-shadow: var(--card-shadow); position: relative; border: 1px solid #e5e7eb;
+        }
+        #map { height: 100%; width: 100%; }
 
-    /* Map Section */
-    .content-split { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; flex: 1; min-height: 400px; }
-    .map-wrapper {
-        background: white; border-radius: 12px; overflow: hidden;
-        box-shadow: var(--card-shadow); position: relative; border: 1px solid #e5e7eb;
-    }
-    #map { height: 100%; width: 100%; }
+        /* Custom Markers */
+        .custom-marker-bubble {
+            background: white; border: 3px solid; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;
+        }
+        .custom-marker-bubble:hover { transform: scale(1.1); z-index: 1000 !important; }
+        .bubble-val { font-size: 14px; font-weight: 800; line-height: 1; color: #333; }
+        .bubble-label { font-size: 8px; font-weight: 700; text-transform: uppercase; color: #555; margin-top: 2px; }
 
-    /* Custom Markers */
-    .custom-marker-bubble {
-        background: white; border: 3px solid; border-radius: 50%;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;
-    }
-    .custom-marker-bubble:hover { transform: scale(1.1); z-index: 1000 !important; }
-    .bubble-val { font-size: 14px; font-weight: 800; line-height: 1; color: #333; }
-    .bubble-label { font-size: 8px; font-weight: 700; text-transform: uppercase; color: #555; margin-top: 2px; }
+        .map-overlay-label {
+            position: absolute; top: 20px; left: 20px; background: white; padding: 10px 15px;
+            border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000;
+        }
+        .map-overlay-label h4 { font-size: 0.9rem; font-weight: 700; color: #1f2937; text-transform: uppercase; }
+        .map-overlay-label span { font-size: 0.7rem; color: #6b7280; font-weight: 600; }
 
-    .map-overlay-label {
-        position: absolute; top: 20px; left: 20px; background: white; padding: 10px 15px;
-        border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000;
-    }
-    .map-overlay-label h4 { font-size: 0.9rem; font-weight: 700; color: #1f2937; text-transform: uppercase; }
-    .map-overlay-label span { font-size: 0.7rem; color: #6b7280; font-weight: 600; }
+        .legend {
+            position: absolute; bottom: 20px; right: 20px; background: white; padding: 10px;
+            border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; width: 200px;
+        }
+        .legend-title { font-size: 0.7rem; color: #6b7280; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
+        .gradient-bar { height: 8px; background: linear-gradient(to right, #10b981, #f59e0b, #ef4444); border-radius: 4px; margin-bottom: 5px; }
+        .legend-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: #4b5563; }
 
-    .legend {
-        position: absolute; bottom: 20px; right: 20px; background: white; padding: 10px;
-        border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; width: 200px;
-    }
-    .legend-title { font-size: 0.7rem; color: #6b7280; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
-    .gradient-bar { height: 8px; background: linear-gradient(to right, #10b981, #f59e0b, #ef4444); border-radius: 4px; margin-bottom: 5px; }
-    .legend-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: #4b5563; }
+        /* Sidebar */
+        .sidebar {
+            background: white; border-radius: 12px; padding: 1.5rem;
+            box-shadow: var(--card-shadow); border: 1px solid #e5e7eb;
+            display: flex; flex-direction: column; gap: 1.5rem;
+        }
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
+        .toggle-label { font-weight: 600; color: #1f2937; display: flex; align-items: center; gap: 8px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-blue); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
-    /* Sidebar */
-    .sidebar {
-        background: white; border-radius: 12px; padding: 1.5rem;
-        box-shadow: var(--card-shadow); border: 1px solid #e5e7eb;
-        display: flex; flex-direction: column; gap: 1.5rem;
-    }
-    .toggle-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
-    .toggle-label { font-weight: 600; color: #1f2937; display: flex; align-items: center; gap: 8px; }
-    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-    input:checked + .slider { background-color: var(--primary-blue); }
-    input:checked + .slider:before { transform: translateX(20px); }
+        .insights-section h3 { font-size: 0.85rem; color: #6b7280; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .insight-item { margin-bottom: 12px; }
+        .insight-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; color: #374151; font-weight: 500; }
+        .progress-bg { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; }
 
-    .insights-section h3 { font-size: 0.85rem; color: #6b7280; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    .insight-item { margin-bottom: 12px; }
-    .insight-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; color: #374151; font-weight: 500; }
-    .progress-bg { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 4px; }
+        /* Simulation Button (Restored for functionality) */
+        .sim-btn-small {
+            width: 100%; margin-top: 10px; padding: 10px;
+            background: white; border: 1px solid #ef4444; color: #ef4444;
+            border-radius: 8px; cursor: pointer; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.2s;
+        }
+        .sim-btn-small:hover { background: #ef4444; color: white; }
+        .sim-btn-small.active { background: #ef4444; color: white; }
 
-    /* Heatmap Pulse */
-    .heat-glow { filter: blur(40px); opacity: 0.6; animation: pulse 4s infinite; }
-    @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 0.7; } 100% { opacity: 0.5; } }
+        /* Heatmap Pulse */
+        .heat-glow { filter: blur(40px); opacity: 0.6; animation: pulse 4s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 0.7; } 100% { opacity: 0.5; } }
 
-    @media (max-width: 1024px) {
-        .stats-grid { grid-template-columns: 1fr 1fr; }
-        .content-split { grid-template-columns: 1fr; }
-        #map { height: 350px; }
-    }
-</style>
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .content-split { grid-template-columns: 1fr; }
+            #map { height: 350px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -189,7 +177,6 @@
         <div class="header-controls">
             <button class="control-btn"><i data-lucide="map"></i> Melbourne</button>
             <button class="control-btn"><i data-lucide="clock"></i> Now</button>
-            
         </div>
     </header>
 
@@ -226,8 +213,6 @@
             </div>
         </div>
 
-       
-
         <div class="content-split">
             
             <div class="map-wrapper">
@@ -260,6 +245,10 @@
                         <span class="slider"></span>
                     </label>
                 </div>
+
+                <button class="sim-btn-small" id="simBtn" onclick="toggleSimulation()">
+                    <i data-lucide="zap" size="16"></i> Simulate Event
+                </button>
 
                 <div class="insights-section">
                     <h3>Why is PSI High?</h3>
@@ -296,90 +285,90 @@
     <script>
         lucide.createIcons();
 
-        // 1. Map Initialization (Centered on Melbourne)
+        // 1. Map Initialization
         const map = L.map('map', {
             zoomControl: false,
             attributionControl: false
-        }).setView([-37.8136, 144.9631], 14);// Center near CG Road/Navrangpura
+        }).setView([-37.8136, 144.9631], 14);
 
-        // Add Light Styled Map Tiles
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             maxZoom: 19
         }).addTo(map);
         
         L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-        // Data for Custom Markers (Melbourne Spots)
-const parkingSpots = [
-    { name: "Fed Square", coords: [-37.8180, 144.9691], avail: 65, color: '#10b981' }, 
-    { name: "Queen Vic Market", coords: [-37.8076, 144.9568], avail: 58, color: '#10b981' }, 
-    { name: "Crown Casino", coords: [-37.8236, 144.9583], avail: 12, color: '#ef4444' }, 
-    { name: "Docklands", coords: [-37.8183, 144.9450], avail: 18, color: '#ef4444' }, 
-    { name: "Southbank", coords: [-37.8220, 144.9650], avail: 22, color: '#dc2626' } 
-];
+        // 2. Data for Custom Markers
+        const parkingSpots = [
+            { name: "Fed Square", coords: [-37.8180, 144.9691], avail: 65, color: '#10b981' }, 
+            { name: "Queen Vic Market", coords: [-37.8076, 144.9568], avail: 58, color: '#10b981' }, 
+            { name: "Crown Casino", coords: [-37.8236, 144.9583], avail: 12, color: '#ef4444' }, 
+            { name: "Docklands", coords: [-37.8183, 144.9450], avail: 18, color: '#ef4444' }, 
+            { name: "Southbank", coords: [-37.8220, 144.9650], avail: 22, color: '#dc2626' } 
+        ];
 
-        // 3. Render Heatmap "Blobs" (Visual Simulation)
-        // We use large transparent circles to mimic the heat gradient in the screenshot
-       const heatBlobs = [
-    { coords: [-37.8220, 144.9650], color: '#ef4444', radius: 800 }, // Hotspot near Southbank
-    { coords: [-37.8076, 144.9568], color: '#f59e0b', radius: 600 }, // Warm spot near Market
-];
+        // 3. Render Heatmap "Blobs"
+        const heatBlobs = [
+            { coords: [-37.8220, 144.9650], color: '#ef4444', radius: 800 }, 
+            { coords: [-37.8076, 144.9568], color: '#f59e0b', radius: 600 }, 
+        ];
 
         heatBlobs.forEach(blob => {
             L.circle(blob.coords, {
-                radius: blob.radius,
-                stroke: false,
-                fillColor: blob.color,
-                fillOpacity: 0.4,
-                className: 'heat-glow' // Adds CSS blur
+                radius: blob.radius, stroke: false, fillColor: blob.color,
+                fillOpacity: 0.4, className: 'heat-glow'
             }).addTo(map);
         });
 
-        // 4. Render Parking Markers
+        // 4. Render Markers
         parkingSpots.forEach(spot => {
             const customIcon = L.divIcon({
                 className: 'custom-pin',
-                html: `
-                    <div class="custom-marker-bubble" style="width: 50px; height: 50px; border-color: ${spot.color}">
+                html: `<div class="custom-marker-bubble" style="width: 50px; height: 50px; border-color: ${spot.color}">
                         <span class="bubble-val">${spot.avail}%</span>
                         <span class="bubble-label">Avail</span>
-                    </div>
-                `,
+                       </div>`,
                 iconSize: [50, 50],
                 iconAnchor: [25, 25]
             });
-
             const marker = L.marker(spot.coords, { icon: customIcon }).addTo(map);
             marker.bindTooltip(`<b>${spot.name}</b>`, { direction: 'top', offset: [0, -25] }).openTooltip();
         });
 
         // 5. Simulation Logic
         let isSimulating = false;
+        
         function toggleSimulation() {
             const btn = document.getElementById('simBtn');
             const psiVal = document.getElementById('val-psi');
-            const predVal = document.getElementById('val-pred');
             
             isSimulating = !isSimulating;
 
-           if (isSimulating) {
-    // ... existing code ...
+            if (isSimulating) {
+                // Simulate Event Mode
+                btn.classList.add('active');
+                btn.innerHTML = `<i data-lucide="loader" class="animate-spin"></i> Event Live...`;
+                psiVal.innerText = "89";
+                psiVal.style.color = "#ef4444";
 
-    // Add event heat blob at MCG
-    L.circle([-37.8200, 144.9834], { // MCG Coordinates
-        radius: 1200, color: 'red', fillColor: '#7f1d1d', fillOpacity: 0.6, className: 'heat-glow'
-    }).addTo(map);
+                // Add event heat blob at MCG
+                L.circle([-37.8200, 144.9834], { 
+                    radius: 1200, color: 'red', fillColor: '#7f1d1d', 
+                    fillOpacity: 0.6, className: 'heat-glow'
+                }).addTo(map);
 
-    map.flyTo([-37.8200, 144.9834], 14); // Fly to MCG
+                map.flyTo([-37.8200, 144.9834], 14); // Fly to MCG
 
-} else {
-    // ... existing code ...
-    map.flyTo([-37.8136, 144.9631], 14); // Reset to CBD
-}
+            } else {
+                // Reset Mode
+                btn.classList.remove('active');
+                btn.innerHTML = `<i data-lucide="zap"></i> Simulate Event`;
+                psiVal.innerText = "58";
+                psiVal.style.color = "#ea580c";
+                
+                map.flyTo([-37.8136, 144.9631], 14); // Reset to CBD
+            }
             lucide.createIcons();
         }
-  
-}
     </script>
 </body>
 </html>
