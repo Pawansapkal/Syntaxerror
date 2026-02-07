@@ -3,13 +3,13 @@ Smart Parking Prediction for Smarter Cities
 
 https://pawansapkal.github.io/Syntaxerror/
 
-Welcome to **ParkSense**! This is our project for the hackathon. It is a smart dashboard that helps people and city authorities understand parking availability in real-time.
+Welcome to ParkSense! This is our project for the hackathon. It is a smart dashboard that helps people and city authorities understand parking availability in real-time.
 
 The Problem
-Finding parking in a busy city like Melbourne is stressful. It wastes time, causes traffic jams, and burns unnecessary fuel. We wanted to solve the question: *"Where can I park right now without circling the block for 20 minutes?"*
+Finding parking in a busy city like Melbourne is stressful. It wastes time, causes traffic jams, and burns unnecessary fuel. We wanted to solve the question: "Where can I park right now without circling the block for 20 minutes?"
 
 The Solution
-ParkSense is an intelligent platform that predicts which parking zones are full and which are empty. It doesn't just show current data; it analyzes patterns to give a **"Parking Stress Index" (PSI)**.
+ParkSense is an intelligent platform that predicts which parking zones are full and which are empty. It doesn't just show current data; it analyzes patterns to give a "Parking Stress Index" (PSI).
 
 We built a lightweight dashboard that visualizes:
 * Real-time parking availability.
@@ -17,19 +17,19 @@ We built a lightweight dashboard that visualizes:
 * Live events that might affect traffic.
 
 Key Features
-* **Interactive Map:** We used **Leaflet.js** to show parking zones. Green markers mean "Good," and Red means "Busy."
-* **Parking Stress Index (PSI):** A simple score (0-100) to show how hard it is to park in the city right now.
-* **Authority Insight Mode:** A toggle for city planners to see *why* parking is busy (e.g., Peak office hours, Events).
-* **Event Simulation:** Click the **"Simulate Event"** button to see what happens to the city when a big game starts at the MCG (Melbourne Cricket Ground)! ⚡
+* Interactive Map: We used Leaflet.js to show parking zones. Green markers mean "Good," and Red means "Busy."
+* Parking Stress Index (PSI): A simple score (0-100) to show how hard it is to park in the city right now.
+* Authority Insight Mode: A toggle for city planners to see why parking is busy (e.g., Peak office hours, Events).
+* Event Simulation: Click the "Simulate Event" button to see what happens to the city when a big game starts at the MCG (Melbourne Cricket Ground)! ⚡
 
 Tech Stack
 We kept the tech stack simple and effective for rapid prototyping:
-* **Frontend:** HTML5, CSS3 (Custom styling)
-* **Logic:** Vanilla JavaScript
-* **Maps:** Leaflet.js & OpenStreetMap
-* **Icons:** Lucide Icons
+* Frontend: HTML5, CSS3 (Custom styling)
+* Logic: Vanilla JavaScript
+* Maps: Leaflet.js & OpenStreetMap
+* Icons: Lucide Icons
 
-Screenshots
+
 
 
 How to Run This Project
@@ -39,7 +39,7 @@ Since this is a lightweight web prototype, it is very easy to run:
 2.  Open the `index.html` file in any web browser (Chrome, Edge, etc.).
 3.  That's it! The dashboard will load instantly.
 
-Future Scope
+Future Scope : 
 In the future, we plan to:
 * Connect real IoT sensor data from parking lots.
 * Add a mobile app version for drivers.
@@ -47,4 +47,4 @@ In the future, we plan to:
 
 ---
 
-Made with  by Team Syntaxerror
+Made with & by Team Syntaxerror
