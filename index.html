@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <button class="control-btn" onclick="toggleTheme()">
-    <i data-lucide="moon" id="themeIcon"></i>
-</button>
-    <meta charset="UTF-8">
+      <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ParkSense | Melbourne</title>
     
@@ -14,246 +11,170 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-       :root {
-    /* Default (Light Mode) */
-    --primary-blue: #0f172a;
-    --bg-gray: #f3f4f6;
-    --card-bg: #ffffff;      /* New variable for cards */
-    --text-main: #111827;    /* New variable for text */
-    --text-sub: #6b7280;
-    --border-color: #e5e7eb;
-    --alert-bg: #fee2e2;
-    --alert-text: #991b1b;
-}
+    :root {
+        --primary-blue: #0f172a; /* Melbourne Dark Blue */
+        --bg-gray: #f3f4f6;
+        --alert-bg: #fee2e2;
+        --alert-text: #991b1b;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
 
-/* Dark Mode Overrides */
-.dark-mode {
-    --primary-blue: #3b82f6; /* Brighter blue for dark mode */
-    --bg-gray: #0b1120;      /* Very dark background */
-    --card-bg: #1e293b;      /* Dark gray cards */
-    --text-main: #f8fafc;    /* White text */
-    --text-sub: #94a3b8;     /* Light gray text */
-    --border-color: #334155;
-    --alert-bg: #450a0a;     /* Dark red background */
-    --alert-text: #fca5a5;   /* Light red text */
-}
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    
+    body { background-color: var(--bg-gray); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-body { 
-    background-color: var(--bg-gray); 
-    color: var(--text-main); /* Apply text color globally */
-    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
-}
+    /* Header */
+    header {
+        background-color: var(--primary-blue);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; }
+    .brand-text h1 { font-size: 1.1rem; font-weight: 700; }
+    .brand-text p { font-size: 0.75rem; opacity: 0.8; }
+    
+    .header-controls { display: flex; gap: 10px; }
+    .control-btn {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 6px 12px;
+        border-radius: 6px;
+        color: white;
+        font-size: 0.85rem;
+        display: flex; align-items: center; gap: 8px;
+        cursor: pointer;
+    }
 
-/* IMPORTANT: Update these classes to use the new variables */
-.stat-card, .sidebar, .map-wrapper, .map-overlay-label, .legend, .custom-marker-bubble {
-    background: var(--card-bg) !important; /* Force use of variable */
-    border-color: var(--border-color) !important;
-    color: var(--text-main);
-}
+    /* Dashboard Layout */
+    .dashboard-container {
+        flex: 1;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        overflow-y: auto;
+    }
 
-.stat-info .value { color: var(--text-main); }
-.stat-info h3, .stat-info .sub { color: var(--text-sub); }
-.brand-text p { color: #cbd5e1; } /* Lighter text in header */
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+    .stat-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .stat-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .stat-icon.yellow { background: #fef3c7; color: #d97706; }
+    .stat-icon.red { background: #fee2e2; color: #dc2626; }
+    .stat-icon.orange { background: #ffedd5; color: #ea580c; }
+    .stat-icon.blue { background: #dbeafe; color: #2563eb; }
 
-        /* 1. Header */
-        header {
-            background-color: var(--primary-blue);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .logo-icon { background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; }
-        .brand-text h1 { font-size: 1.1rem; font-weight: 700; }
-        .brand-text p { font-size: 0.75rem; opacity: 0.8; }
-        
-        .header-controls { display: flex; gap: 10px; }
-        .control-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 6px 12px;
-            border-radius: 6px;
-            color: white;
-            font-size: 0.85rem;
-            display: flex; align-items: center; gap: 8px;
-            cursor: pointer;
-        }
+    .stat-info h3 { font-size: 0.75rem; color: #6b7280; font-weight: 500; }
+    .stat-info .value { font-size: 1.5rem; font-weight: 700; color: #111827; }
+    .stat-info .sub { font-size: 0.85rem; color: #6b7280; font-weight: 400; margin-left: 4px; }
 
-        /* 2. Main Layout */
-        .dashboard-container {
-            flex: 1;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            overflow-y: auto;
-        }
+    /* Alert Banner (Kept in CSS just in case, but hidden if you removed HTML) */
+    .alert-banner {
+        background-color: var(--alert-bg);
+        border: 1px solid #fecaca;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--alert-text);
+    }
+    .alert-content { display: flex; align-items: center; gap: 12px; }
+    .alert-text strong { display: block; font-size: 0.95rem; }
+    .alert-text span { font-size: 0.85rem; opacity: 0.9; }
+    
+    .simulate-btn {
+        background: transparent; border: 1px solid #ef4444; color: #ef4444;
+        padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+        cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+    }
+    .simulate-btn:hover { background: #ef4444; color: white; }
+    .simulate-btn.active { background: #ef4444; color: white; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
 
-        /* 3. Stats Row */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-        }
-        .stat-card {
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .stat-icon {
-            width: 40px; height: 40px;
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .stat-icon.yellow { background: #fef3c7; color: #d97706; }
-        .stat-icon.red { background: #fee2e2; color: #dc2626; }
-        .stat-icon.orange { background: #ffedd5; color: #ea580c; }
-        .stat-icon.blue { background: #dbeafe; color: #2563eb; }
+    /* Map Section */
+    .content-split { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; flex: 1; min-height: 400px; }
+    .map-wrapper {
+        background: white; border-radius: 12px; overflow: hidden;
+        box-shadow: var(--card-shadow); position: relative; border: 1px solid #e5e7eb;
+    }
+    #map { height: 100%; width: 100%; }
 
-        .stat-info h3 { font-size: 0.75rem; color: #6b7280; font-weight: 500; }
-        .stat-info .value { font-size: 1.5rem; font-weight: 700; color: #111827; }
-        .stat-info .sub { font-size: 0.85rem; color: #6b7280; font-weight: 400; margin-left: 4px; }
+    /* Custom Markers */
+    .custom-marker-bubble {
+        background: white; border: 3px solid; border-radius: 50%;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;
+    }
+    .custom-marker-bubble:hover { transform: scale(1.1); z-index: 1000 !important; }
+    .bubble-val { font-size: 14px; font-weight: 800; line-height: 1; color: #333; }
+    .bubble-label { font-size: 8px; font-weight: 700; text-transform: uppercase; color: #555; margin-top: 2px; }
 
-        /* 4. Alert Banner */
-        .alert-banner {
-            background-color: var(--alert-bg);
-            border: 1px solid #fecaca;
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: var(--alert-text);
-        }
-        .alert-content { display: flex; align-items: center; gap: 12px; }
-        .alert-text strong { display: block; font-size: 0.95rem; }
-        .alert-text span { font-size: 0.85rem; opacity: 0.9; }
-        
-        .simulate-btn {
-            background: transparent;
-            border: 1px solid #ef4444;
-            color: #ef4444;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex; align-items: center; gap: 6px;
-            transition: all 0.2s;
-        }
-        .simulate-btn:hover { background: #ef4444; color: white; }
-        .simulate-btn.active { background: #ef4444; color: white; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+    .map-overlay-label {
+        position: absolute; top: 20px; left: 20px; background: white; padding: 10px 15px;
+        border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 1000;
+    }
+    .map-overlay-label h4 { font-size: 0.9rem; font-weight: 700; color: #1f2937; text-transform: uppercase; }
+    .map-overlay-label span { font-size: 0.7rem; color: #6b7280; font-weight: 600; }
 
-        /* 5. Map & Sidebar Split */
-        .content-split {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1rem;
-            flex: 1;
-            min-height: 400px;
-        }
+    .legend {
+        position: absolute; bottom: 20px; right: 20px; background: white; padding: 10px;
+        border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; width: 200px;
+    }
+    .legend-title { font-size: 0.7rem; color: #6b7280; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
+    .gradient-bar { height: 8px; background: linear-gradient(to right, #10b981, #f59e0b, #ef4444); border-radius: 4px; margin-bottom: 5px; }
+    .legend-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: #4b5563; }
 
-        /* Map Styles */
-        .map-wrapper {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            position: relative;
-            border: 1px solid #e5e7eb;
-        }
-        #map { height: 100%; width: 100%; }
+    /* Sidebar */
+    .sidebar {
+        background: white; border-radius: 12px; padding: 1.5rem;
+        box-shadow: var(--card-shadow); border: 1px solid #e5e7eb;
+        display: flex; flex-direction: column; gap: 1.5rem;
+    }
+    .toggle-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
+    .toggle-label { font-weight: 600; color: #1f2937; display: flex; align-items: center; gap: 8px; }
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--primary-blue); }
+    input:checked + .slider:before { transform: translateX(20px); }
 
-        /* Custom Leaflet Marker (The Percentage Bubbles) */
-        .custom-marker-bubble {
-            background: white;
-            border: 3px solid; /* Color set inline */
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            font-family: 'Inter', sans-serif;
-            transition: transform 0.2s;
-        }
-        .custom-marker-bubble:hover { transform: scale(1.1); z-index: 1000 !important; }
-        .bubble-val { font-size: 14px; font-weight: 800; line-height: 1; color: #333; }
-        .bubble-label { font-size: 8px; font-weight: 700; text-transform: uppercase; color: #555; margin-top: 2px; }
+    .insights-section h3 { font-size: 0.85rem; color: #6b7280; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .insight-item { margin-bottom: 12px; }
+    .insight-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; color: #374151; font-weight: 500; }
+    .progress-bg { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 4px; }
 
-        /* Map Overlays */
-        .map-overlay-label {
-            position: absolute;
-            top: 20px; left: 20px;
-            background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            z-index: 1000;
-        }
-        .map-overlay-label h4 { font-size: 0.9rem; font-weight: 700; color: #1f2937; text-transform: uppercase; }
-        .map-overlay-label span { font-size: 0.7rem; color: #6b7280; font-weight: 600; }
+    /* Heatmap Pulse */
+    .heat-glow { filter: blur(40px); opacity: 0.6; animation: pulse 4s infinite; }
+    @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 0.7; } 100% { opacity: 0.5; } }
 
-        .legend {
-            position: absolute; bottom: 20px; right: 20px;
-            background: white; padding: 10px; border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000;
-            width: 200px;
-        }
-        .legend-title { font-size: 0.7rem; color: #6b7280; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
-        .gradient-bar { height: 8px; background: linear-gradient(to right, #10b981, #f59e0b, #ef4444); border-radius: 4px; margin-bottom: 5px; }
-        .legend-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: #4b5563; }
-
-        /* Right Sidebar */
-        .sidebar {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--card-shadow);
-            border: 1px solid #e5e7eb;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
-        .toggle-label { font-weight: 600; color: #1f2937; display: flex; align-items: center; gap: 8px; }
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary-blue); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        .insights-section h3 { font-size: 0.85rem; color: #6b7280; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .insight-item { margin-bottom: 12px; }
-        .insight-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; color: #374151; font-weight: 500; }
-        .progress-bg { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 4px; }
-
-        /* Utility for Heatmap Glow */
-        .heat-glow {
-            filter: blur(40px);
-            opacity: 0.6;
-            animation: pulse 4s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 0.7; } 100% { opacity: 0.5; } }
-
-        /* Mobile Responsive */
-        @media (max-width: 1024px) {
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .content-split { grid-template-columns: 1fr; }
-            #map { height: 350px; }
-        }
-    </style>
+    @media (max-width: 1024px) {
+        .stats-grid { grid-template-columns: 1fr 1fr; }
+        .content-split { grid-template-columns: 1fr; }
+        #map { height: 350px; }
+    }
+</style>
 </head>
 <body>
 
@@ -457,35 +378,7 @@ const parkingSpots = [
 }
             lucide.createIcons();
         }
-   // 1. Save the Tile Layer to a variable so we can change it later
-let currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19
-}).addTo(map);
-
-// 2. The Toggle Function
-function toggleTheme() {
-    const body = document.body;
-    const icon = document.getElementById('themeIcon');
-    
-    // Toggle Class
-    body.classList.toggle('dark-mode');
-    const isDark = body.classList.contains('dark-mode');
-
-    // Update Icon
-    if (isDark) {
-        icon.setAttribute('data-lucide', 'sun'); // Switch to Sun icon
-        
-        // Switch Map to Dark Mode Tiles
-        currentTileLayer.setUrl('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png');
-    } else {
-        icon.setAttribute('data-lucide', 'moon'); // Switch to Moon icon
-        
-        // Switch Map back to Light Mode Tiles
-        currentTileLayer.setUrl('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png');
-    }
-
-    // Refresh Icons
-    lucide.createIcons();
+  
 }
     </script>
 </body>
