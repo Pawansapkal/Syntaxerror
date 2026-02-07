@@ -3,268 +3,454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark AI | Melbourne Edition</title>
+    <title>Smart Parking Intelligence | Ahmedabad</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #00f2fe;
-            --secondary: #4facfe;
-            --bg-dark: #0f172a;
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --text: #f8fafc;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
+            --primary-blue: #1e3a8a; /* Navy Blue like screenshot */
+            --bg-gray: #f3f4f6;
+            --alert-bg: #fee2e2;
+            --alert-text: #991b1b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
-        body { background: var(--bg-dark); color: var(--text); height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { background-color: var(--bg-gray); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* App Grid */
-        .app-container { display: grid; grid-template-columns: 320px 1fr; height: 100vh; }
-        @media (max-width: 1024px) { .app-container { grid-template-columns: 1fr; } aside { display: none; } }
-
-        /* Sidebar */
-        aside {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--border);
-            padding: 20px;
-            display: flex; flex-direction: column; gap: 20px;
-            z-index: 20;
+        /* 1. Header */
+        header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; }
+        .brand-text h1 { font-size: 1.1rem; font-weight: 700; }
+        .brand-text p { font-size: 0.75rem; opacity: 0.8; }
+        
+        .header-controls { display: flex; gap: 10px; }
+        .control-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.85rem;
+            display: flex; align-items: center; gap: 8px;
+            cursor: pointer;
         }
 
-        .logo { 
-            font-size: 1.5rem; font-weight: 800; 
-            background: linear-gradient(to right, #4facfe, #00f2fe); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            display: flex; align-items: center; gap: 10px;
+        /* 2. Main Layout */
+        .dashboard-container {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
         }
 
-        .control-group label { font-size: 0.8rem; opacity: 0.7; margin-bottom: 5px; display: block; }
-        .control-group input, .control-group select {
-            width: 100%; background: var(--glass); border: 1px solid var(--border);
-            padding: 8px; border-radius: 6px; color: white; outline: none;
+        /* 3. Stats Row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .stat-icon {
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .stat-icon.yellow { background: #fef3c7; color: #d97706; }
+        .stat-icon.red { background: #fee2e2; color: #dc2626; }
+        .stat-icon.orange { background: #ffedd5; color: #ea580c; }
+        .stat-icon.blue { background: #dbeafe; color: #2563eb; }
+
+        .stat-info h3 { font-size: 0.75rem; color: #6b7280; font-weight: 500; }
+        .stat-info .value { font-size: 1.5rem; font-weight: 700; color: #111827; }
+        .stat-info .sub { font-size: 0.85rem; color: #6b7280; font-weight: 400; margin-left: 4px; }
+
+        /* 4. Alert Banner */
+        .alert-banner {
+            background-color: var(--alert-bg);
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--alert-text);
+        }
+        .alert-content { display: flex; align-items: center; gap: 12px; }
+        .alert-text strong { display: block; font-size: 0.95rem; }
+        .alert-text span { font-size: 0.85rem; opacity: 0.9; }
+        
+        .simulate-btn {
+            background: transparent;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s;
+        }
+        .simulate-btn:hover { background: #ef4444; color: white; }
+        .simulate-btn.active { background: #ef4444; color: white; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+
+        /* 5. Map & Sidebar Split */
+        .content-split {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            flex: 1;
+            min-height: 400px;
         }
 
-        /* Gradient Button */
-        .btn-predict {
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
-            border: none; padding: 12px; border-radius: 8px; color: white; font-weight: bold;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+        /* Map Styles */
+        .map-wrapper {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            border: 1px solid #e5e7eb;
+        }
+        #map { height: 100%; width: 100%; }
+
+        /* Custom Leaflet Marker (The Percentage Bubbles) */
+        .custom-marker-bubble {
+            background: white;
+            border: 3px solid; /* Color set inline */
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-family: 'Inter', sans-serif;
             transition: transform 0.2s;
         }
-        .btn-predict:hover { transform: scale(1.02); }
+        .custom-marker-bubble:hover { transform: scale(1.1); z-index: 1000 !important; }
+        .bubble-val { font-size: 14px; font-weight: 800; line-height: 1; color: #333; }
+        .bubble-label { font-size: 8px; font-weight: 700; text-transform: uppercase; color: #555; margin-top: 2px; }
 
-        /* Map & Overlay */
-        main { position: relative; height: 100%; width: 100%; }
-        #map { height: 100%; width: 100%; z-index: 1; background: #0a0f1e; }
-
-        /* Custom Gradient Marker Styles */
-        .gradient-marker {
-            border-radius: 50%;
-            box-shadow: 0 0 15px currentColor;
-            animation: pulse 2s infinite;
+        /* Map Overlays */
+        .map-overlay-label {
+            position: absolute;
+            top: 20px; left: 20px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 1000;
         }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0px rgba(255,255,255,0.4); }
-            100% { box-shadow: 0 0 0 20px rgba(255,255,255,0); }
-        }
+        .map-overlay-label h4 { font-size: 0.9rem; font-weight: 700; color: #1f2937; text-transform: uppercase; }
+        .map-overlay-label span { font-size: 0.7rem; color: #6b7280; font-weight: 600; }
 
-        /* Floating Info Card */
-        .info-card {
-            position: absolute; top: 20px; left: 20px; width: 280px;
-            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px);
-            border: 1px solid var(--border); border-radius: 15px; padding: 20px;
-            z-index: 1000; display: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        /* Legend */
         .legend {
             position: absolute; bottom: 20px; right: 20px;
-            background: var(--card-bg); padding: 15px; border-radius: 10px;
-            z-index: 1000; border: 1px solid var(--border); font-size: 0.8rem;
+            background: white; padding: 10px; border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000;
+            width: 200px;
         }
-        .legend div { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .legend-title { font-size: 0.7rem; color: #6b7280; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
+        .gradient-bar { height: 8px; background: linear-gradient(to right, #10b981, #f59e0b, #ef4444); border-radius: 4px; margin-bottom: 5px; }
+        .legend-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: #4b5563; }
 
+        /* Right Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
+        .toggle-label { font-weight: 600; color: #1f2937; display: flex; align-items: center; gap: 8px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-blue); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .insights-section h3 { font-size: 0.85rem; color: #6b7280; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .insight-item { margin-bottom: 12px; }
+        .insight-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 6px; color: #374151; font-weight: 500; }
+        .progress-bg { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; }
+
+        /* Utility for Heatmap Glow */
+        .heat-glow {
+            filter: blur(40px);
+            opacity: 0.6;
+            animation: pulse 4s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 0.7; } 100% { opacity: 0.5; } }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .content-split { grid-template-columns: 1fr; }
+            #map { height: 350px; }
+        }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <aside>
-        <div class="logo"><i data-lucide="map-pin"></i> SmartPark MEL</div>
+    <header>
+        <div class="brand">
+            <div class="logo-icon"><i data-lucide="map-pin" color="white"></i></div>
+            <div class="brand-text">
+                <h1>Smart Parking Intelligence</h1>
+                <p>Ahmedabad & Vadodara Region</p>
+            </div>
+        </div>
+        <div class="header-controls">
+            <button class="control-btn"><i data-lucide="map"></i> Ahmedabad</button>
+            <button class="control-btn"><i data-lucide="clock"></i> Now</button>
+            <button class="control-btn"><i data-lucide="globe"></i> EN</button>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
         
-        <div class="control-group">
-            <label>Time of Day</label>
-            <input type="range" id="timeSlider" min="0" max="23" value="14" oninput="updateLabel(this.value)">
-            <div style="text-align: right; font-size: 0.8rem; color: var(--primary);" id="timeLabel">14:00</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon yellow"><i data-lucide="trending-up"></i></div>
+                <div class="stat-info">
+                    <h3>Current Availability</h3>
+                    <span class="value" id="val-avail">38%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red"><i data-lucide="trending-down"></i></div>
+                <div class="stat-info">
+                    <h3>Predicted (30 min)</h3>
+                    <span class="value" id="val-pred">27%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i data-lucide="activity"></i></div>
+                <div class="stat-info">
+                    <h3>Parking Stress Index</h3>
+                    <span class="value" style="color: #ea580c" id="val-psi">58</span><span class="sub">/100</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i data-lucide="shield-check"></i></div>
+                <div class="stat-info">
+                    <h3>Confidence Level</h3>
+                    <span class="value" style="color: #2563eb">High</span>
+                </div>
+            </div>
         </div>
 
-        <div class="control-group">
-            <label>Event Mode</label>
-            <select id="eventMode">
-                <option value="none">No Events</option>
-                <option value="mcg">MCG Match Day</option>
-                <option value="convention">Convention Ctr</option>
-            </select>
+        <div class="alert-banner" id="alertBanner">
+            <div class="alert-content">
+                <i data-lucide="alert-triangle" size="24"></i>
+                <div class="alert-text">
+                    <strong>Cricket Match at Narendra Modi Stadium</strong>
+                    <span>IPL match - 50,000+ expected attendance. Major parking stress expected around Motera and SG Highway.</span>
+                </div>
+            </div>
+            <button class="simulate-btn" id="simBtn" onclick="toggleSimulation()">
+                <i data-lucide="zap" size="16"></i> Simulate Event
+            </button>
         </div>
 
-        <div class="control-group">
-            <label>Traffic Density</label>
-            <input type="range" id="trafficSlider" min="0" max="100" value="45">
-        </div>
-
-        <button class="btn-predict" onclick="runSimulation()">
-            <i data-lucide="radar"></i> Predict Zones
-        </button>
-
-        <div style="margin-top: auto;">
-            <label style="font-size: 0.8rem; opacity: 0.6;">Availability History</label>
-            <canvas id="trendChart" height="120"></canvas>
-        </div>
-    </aside>
-
-    <main>
-        <div id="map"></div>
-        
-        <div class="info-card" id="infoCard">
-            <h3 id="zoneName">Federation Square</h3>
-            <h1 id="zoneValue" style="font-size: 2.5rem; color: var(--primary); margin: 10px 0;">85%</h1>
-            <p style="font-size: 0.8rem; opacity: 0.7;">Confidence: <span id="zoneConf">92%</span></p>
-        </div>
-
-        <div class="legend">
-            <div><div class="dot" style="background: #00f2fe; box-shadow: 0 0 10px #00f2fe"></div> High (>50%)</div>
-            <div><div class="dot" style="background: #facc15; box-shadow: 0 0 10px #facc15"></div> Medium (20-50%)</div>
-            <div><div class="dot" style="background: #ef4444; box-shadow: 0 0 10px #ef4444"></div> Low (<20%)</div>
-        </div>
-    </main>
-</div>
-
-<script>
-    lucide.createIcons();
-
-    // 1. Initialize Map centered on Melbourne CBD
-    const map = L.map('map').setView([-37.8136, 144.9631], 14);
-
-    // Dark Mode Tiles (CartoDB)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap contributors, © CARTO'
-    }).addTo(map);
-
-    // 2. Melbourne Data Points
-    const zones = [
-        { name: "Federation Square", coords: [-37.8180, 144.9691], base: 40 },
-        { name: "Queen Victoria Market", coords: [-37.8076, 144.9568], base: 60 },
-        { name: "Crown Casino Complex", coords: [-37.8236, 144.9583], base: 20 },
-        { name: "Melbourne Central", coords: [-37.8110, 144.9626], base: 30 },
-        { name: "Docklands District", coords: [-37.8183, 144.9450], base: 70 },
-        { name: "MCG / Yarra Park", coords: [-37.8200, 144.9834], base: 80 }
-    ];
-
-    let markersLayer = L.layerGroup().addTo(map);
-
-    // 3. Logic to create Gradient Markers
-    function createGradientMarker(lat, lng, availability, name) {
-        // Determine color based on availability
-        let color = availability > 50 ? '0, 242, 254' : (availability > 20 ? '250, 204, 21' : '239, 68, 68'); // RGB values
-        let hexColor = availability > 50 ? '#00f2fe' : (availability > 20 ? '#facc15' : '#ef4444');
-
-        // Custom HTML Icon with CSS Radial Gradient
-        const customIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: `<div style="
-                width: 60px; height: 60px;
-                background: radial-gradient(circle, rgba(${color}, 0.6) 0%, rgba(${color}, 0) 70%);
-                border-radius: 50%;
-                display: flex; justify-content: center; align-items: center;
-                box-shadow: 0 0 15px rgba(${color}, 0.4);
-                cursor: pointer;
-            ">
-                <div style="width: 10px; height: 10px; background: white; border-radius: 50%;"></div>
-            </div>`,
-            iconSize: [60, 60],
-            iconAnchor: [30, 30]
-        });
-
-        const marker = L.marker([lat, lng], { icon: customIcon }).addTo(markersLayer);
-        
-        marker.on('click', () => {
-            document.getElementById('infoCard').style.display = 'block';
-            document.getElementById('zoneName').innerText = name;
-            document.getElementById('zoneValue').innerText = availability + '%';
-            document.getElementById('zoneValue').style.color = hexColor;
-        });
-    }
-
-    // 4. Simulation Engine
-    function runSimulation() {
-        markersLayer.clearLayers();
-        const hour = parseInt(document.getElementById('timeSlider').value);
-        const eventType = document.getElementById('eventMode').value;
-        const traffic = parseInt(document.getElementById('trafficSlider').value);
-
-        let totalAvg = 0;
-
-        zones.forEach(z => {
-            let val = z.base;
-
-            // Logic: Night is free, Day is busy
-            if(hour > 8 && hour < 18) val -= 20; 
-            else val += 20;
-
-            // Logic: Events destroy parking at MCG
-            if(eventType === 'mcg' && z.name.includes("MCG")) val -= 60;
-            if(eventType === 'convention' && z.name.includes("Crown")) val -= 50;
-
-            // Logic: High traffic reduces all parking
-            val -= (traffic * 0.3);
-
-            // Clamp and randomize slightly
-            val = Math.max(5, Math.min(95, Math.floor(val + (Math.random() * 10 - 5))));
+        <div class="content-split">
             
-            createGradientMarker(z.coords[0], z.coords[1], val, z.name);
-            totalAvg += val;
+            <div class="map-wrapper">
+                <div id="map"></div>
+                
+                <div class="map-overlay-label">
+                    <h4>Ahmedabad</h4>
+                    <span>Parking Stress Heatmap</span>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-title">Stress Intensity</div>
+                    <div class="gradient-bar"></div>
+                    <div class="legend-labels">
+                        <span>Available</span>
+                        <span>Filling</span>
+                        <span>Full</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="toggle-row">
+                    <div class="toggle-label">
+                        <i data-lucide="shield" size="18" style="color: #2563eb"></i>
+                        Authority Insight Mode
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="insights-section">
+                    <h3>Why is PSI High?</h3>
+                    
+                    <div class="insight-item">
+                        <div class="insight-header"><span>Peak office hours</span> <span style="color:#ef4444">High</span></div>
+                        <div class="progress-bg"><div class="progress-fill" style="width: 85%; background: #ef4444;"></div></div>
+                    </div>
+
+                    <div class="insight-item">
+                        <div class="insight-header"><span>Heavy traffic inflow</span> <span style="color:#ef4444">High</span></div>
+                        <div class="progress-bg"><div class="progress-fill" style="width: 92%; background: #ef4444;"></div></div>
+                    </div>
+
+                    <div class="insight-item">
+                        <div class="insight-header"><span>Event nearby</span> <span style="color:#ef4444">Critical</span></div>
+                        <div class="progress-bg"><div class="progress-fill" style="width: 98%; background: #ef4444;"></div></div>
+                    </div>
+
+                    <div class="insight-item">
+                        <div class="insight-header"><span>Two-wheeler density</span> <span style="color:#f59e0b">Med</span></div>
+                        <div class="progress-bg"><div class="progress-fill" style="width: 60%; background: #f59e0b;"></div></div>
+                    </div>
+                </div>
+
+                <div style="margin-top:auto; padding-top:20px; border-top:1px solid #eee; color:#666; font-size:0.8rem;">
+                    <p><strong>Recommendation:</strong> Divert traffic from CG Road to Riverfront Parking A & B.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // 1. Map Initialization (Centered on Ahmedabad)
+        const map = L.map('map', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView([23.0300, 72.5600], 13); // Center near CG Road/Navrangpura
+
+        // Add Light Styled Map Tiles
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19
+        }).addTo(map);
+        
+        L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+        // 2. Data for Custom Markers (Ahmedabad Spots)
+        const parkingSpots = [
+            { name: "Vastrapur", coords: [23.0350, 72.5250], avail: 65, color: '#10b981' }, // Green
+            { name: "Navrangpura", coords: [23.0380, 72.5650], avail: 58, color: '#10b981' }, // Green
+            { name: "Law Garden", coords: [23.0260, 72.5580], avail: 12, color: '#ef4444' }, // Red
+            { name: "CG Road", coords: [23.0220, 72.5720], avail: 18, color: '#ef4444' }, // Red
+            { name: "Ashram Road", coords: [23.0450, 72.5750], avail: 22, color: '#dc2626' } // Dark Red
+        ];
+
+        // 3. Render Heatmap "Blobs" (Visual Simulation)
+        // We use large transparent circles to mimic the heat gradient in the screenshot
+        const heatBlobs = [
+            { coords: [23.0250, 72.5600], color: '#ef4444', radius: 1500 }, // Hotspot Center (CG Road)
+            { coords: [23.0350, 72.5300], color: '#f59e0b', radius: 1200 }, // Warm Spot (Vastrapur)
+        ];
+
+        heatBlobs.forEach(blob => {
+            L.circle(blob.coords, {
+                radius: blob.radius,
+                stroke: false,
+                fillColor: blob.color,
+                fillOpacity: 0.4,
+                className: 'heat-glow' // Adds CSS blur
+            }).addTo(map);
         });
 
-        updateChart(Math.round(totalAvg / zones.length));
-    }
+        // 4. Render Parking Markers
+        parkingSpots.forEach(spot => {
+            const customIcon = L.divIcon({
+                className: 'custom-pin',
+                html: `
+                    <div class="custom-marker-bubble" style="width: 50px; height: 50px; border-color: ${spot.color}">
+                        <span class="bubble-val">${spot.avail}%</span>
+                        <span class="bubble-label">Avail</span>
+                    </div>
+                `,
+                iconSize: [50, 50],
+                iconAnchor: [25, 25]
+            });
 
-    // 5. Utilities
-    function updateLabel(val) {
-        document.getElementById('timeLabel').innerText = val + ":00";
-    }
+            const marker = L.marker(spot.coords, { icon: customIcon }).addTo(map);
+            marker.bindTooltip(`<b>${spot.name}</b>`, { direction: 'top', offset: [0, -25] }).openTooltip();
+        });
 
-    // Chart Setup
-    const ctx = document.getElementById('trendChart').getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['1', '2', '3', '4', '5'],
-            datasets: [{
-                data: [50, 45, 40, 55, 60],
-                borderColor: '#00f2fe', borderWidth: 2, pointRadius: 0, tension: 0.4
-            }]
-        },
-        options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
-    });
+        // 5. Simulation Logic
+        let isSimulating = false;
+        function toggleSimulation() {
+            const btn = document.getElementById('simBtn');
+            const psiVal = document.getElementById('val-psi');
+            const predVal = document.getElementById('val-pred');
+            
+            isSimulating = !isSimulating;
 
-    function updateChart(val) {
-        chart.data.datasets[0].data.shift();
-        chart.data.datasets[0].data.push(val);
-        chart.update();
-    }
+            if (isSimulating) {
+                btn.classList.add('active');
+                btn.innerHTML = `<i data-lucide="loader" class="animate-spin"></i> Simulating...`;
+                
+                // Simulate Impact
+                psiVal.innerText = "89";
+                psiVal.style.color = "#ef4444";
+                predVal.innerText = "5%";
+                
+                // Add extreme heat blob near stadium (Motera is further north, but we'll add it nearby for demo)
+                L.circle([23.0900, 72.5900], {
+                    radius: 2000, color: 'red', fillColor: '#7f1d1d', fillOpacity: 0.6, className: 'heat-glow'
+                }).addTo(map);
 
-    // Init
-    runSimulation();
-</script>
+                map.flyTo([23.0900, 72.5900], 13); // Fly to stadium area
+                
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = `<i data-lucide="zap"></i> Simulate Event`;
+                
+                // Reset
+                psiVal.innerText = "58";
+                psiVal.style.color = "#ea580c";
+                predVal.innerText = "27%";
+                map.flyTo([23.0300, 72.5600], 13); // Back to city center
+            }
+            lucide.createIcons();
+        }
+    </script>
 </body>
 </html>
