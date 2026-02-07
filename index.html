@@ -424,32 +424,20 @@
             
             isSimulating = !isSimulating;
 
-            if (isSimulating) {
-                btn.classList.add('active');
-                btn.innerHTML = `<i data-lucide="loader" class="animate-spin"></i> Simulating...`;
-                
-                // Simulate Impact
-                psiVal.innerText = "89";
-                psiVal.style.color = "#ef4444";
-                predVal.innerText = "5%";
-                
-                // Add extreme heat blob near stadium (Motera is further north, but we'll add it nearby for demo)
-                L.circle([23.0900, 72.5900], {
-                    radius: 2000, color: 'red', fillColor: '#7f1d1d', fillOpacity: 0.6, className: 'heat-glow'
-                }).addTo(map);
+           if (isSimulating) {
+    // ... existing code ...
 
-                map.flyTo([23.0900, 72.5900], 13); // Fly to stadium area
-                
-            } else {
-                btn.classList.remove('active');
-                btn.innerHTML = `<i data-lucide="zap"></i> Simulate Event`;
-                
-                // Reset
-                psiVal.innerText = "58";
-                psiVal.style.color = "#ea580c";
-                predVal.innerText = "27%";
-                map.flyTo([23.0300, 72.5600], 13); // Back to city center
-            }
+    // Add event heat blob at MCG
+    L.circle([-37.8200, 144.9834], { // MCG Coordinates
+        radius: 1200, color: 'red', fillColor: '#7f1d1d', fillOpacity: 0.6, className: 'heat-glow'
+    }).addTo(map);
+
+    map.flyTo([-37.8200, 144.9834], 14); // Fly to MCG
+
+} else {
+    // ... existing code ...
+    map.flyTo([-37.8136, 144.9631], 14); // Reset to CBD
+}
             lucide.createIcons();
         }
     </script>
