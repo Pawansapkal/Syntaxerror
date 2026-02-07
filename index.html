@@ -232,12 +232,12 @@
         <div class="brand">
             <div class="logo-icon"><i data-lucide="map-pin" color="white"></i></div>
             <div class="brand-text">
-                <h1>Smart Parking Intelligence</h1>
-                <p>Ahmedabad & Vadodara Region</p>
+                <h1>ParkSense</h1>
+                <p>Melbourne</p>
             </div>
         </div>
         <div class="header-controls">
-            <button class="control-btn"><i data-lucide="map"></i> Ahmedabad</button>
+            <button class="control-btn"><i data-lucide="map"></i> Melbourne</button>
             <button class="control-btn"><i data-lucide="clock"></i> Now</button>
             <button class="control-btn"><i data-lucide="globe"></i> EN</button>
         </div>
@@ -280,7 +280,7 @@
             <div class="alert-content">
                 <i data-lucide="alert-triangle" size="24"></i>
                 <div class="alert-text">
-                    <strong>Cricket Match at Narendra Modi Stadium</strong>
+                    <strong>Match Day at Melbourne Cricket Ground (MCG)</strong>
                     <span>IPL match - 50,000+ expected attendance. Major parking stress expected around Motera and SG Highway.</span>
                 </div>
             </div>
@@ -295,7 +295,7 @@
                 <div id="map"></div>
                 
                 <div class="map-overlay-label">
-                    <h4>Ahmedabad</h4>
+                    <h4>Melbourne</h4>
                     <span>Parking Stress Heatmap</span>
                 </div>
 
@@ -361,7 +361,7 @@
         const map = L.map('map', {
             zoomControl: false,
             attributionControl: false
-        }).setView([23.0300, 72.5600], 13); // Center near CG Road/Navrangpura
+        }).setView([-37.8136, 144.9631], 14); // Center near CG Road/Navrangpura
 
         // Add Light Styled Map Tiles
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -372,19 +372,19 @@
 
         // 2. Data for Custom Markers (Ahmedabad Spots)
         const parkingSpots = [
-            { name: "Vastrapur", coords: [23.0350, 72.5250], avail: 65, color: '#10b981' }, // Green
-            { name: "Navrangpura", coords: [23.0380, 72.5650], avail: 58, color: '#10b981' }, // Green
-            { name: "Law Garden", coords: [23.0260, 72.5580], avail: 12, color: '#ef4444' }, // Red
-            { name: "CG Road", coords: [23.0220, 72.5720], avail: 18, color: '#ef4444' }, // Red
-            { name: "Ashram Road", coords: [23.0450, 72.5750], avail: 22, color: '#dc2626' } // Dark Red
-        ];
+    { name: "Fed Square", coords: [-37.8180, 144.9691], avail: 65, color: '#10b981' }, 
+    { name: "Queen Vic Market", coords: [-37.8076, 144.9568], avail: 58, color: '#10b981' }, 
+    { name: "Crown Casino", coords: [-37.8236, 144.9583], avail: 12, color: '#ef4444' }, 
+    { name: "Docklands", coords: [-37.8183, 144.9450], avail: 18, color: '#ef4444' }, 
+    { name: "Southbank", coords: [-37.8220, 144.9650], avail: 22, color: '#dc2626' } 
+];
 
         // 3. Render Heatmap "Blobs" (Visual Simulation)
         // We use large transparent circles to mimic the heat gradient in the screenshot
-        const heatBlobs = [
-            { coords: [23.0250, 72.5600], color: '#ef4444', radius: 1500 }, // Hotspot Center (CG Road)
-            { coords: [23.0350, 72.5300], color: '#f59e0b', radius: 1200 }, // Warm Spot (Vastrapur)
-        ];
+       const heatBlobs = [
+    { coords: [-37.8220, 144.9650], color: '#ef4444', radius: 800 }, // Hotspot near Southbank
+    { coords: [-37.8076, 144.9568], color: '#f59e0b', radius: 600 }, // Warm spot near Market
+];
 
         heatBlobs.forEach(blob => {
             L.circle(blob.coords, {
@@ -424,31 +424,19 @@
             isSimulating = !isSimulating;
 
             if (isSimulating) {
-                btn.classList.add('active');
-                btn.innerHTML = `<i data-lucide="loader" class="animate-spin"></i> Simulating...`;
-                
-                // Simulate Impact
-                psiVal.innerText = "89";
-                psiVal.style.color = "#ef4444";
-                predVal.innerText = "5%";
-                
-                // Add extreme heat blob near stadium (Motera is further north, but we'll add it nearby for demo)
-                L.circle([23.0900, 72.5900], {
-                    radius: 2000, color: 'red', fillColor: '#7f1d1d', fillOpacity: 0.6, className: 'heat-glow'
-                }).addTo(map);
+    // ... existing code ...
 
-                map.flyTo([23.0900, 72.5900], 13); // Fly to stadium area
-                
-            } else {
-                btn.classList.remove('active');
-                btn.innerHTML = `<i data-lucide="zap"></i> Simulate Event`;
-                
-                // Reset
-                psiVal.innerText = "58";
-                psiVal.style.color = "#ea580c";
-                predVal.innerText = "27%";
-                map.flyTo([23.0300, 72.5600], 13); // Back to city center
-            }
+    // Add event heat blob at MCG
+    L.circle([-37.8200, 144.9834], { // MCG Coordinates
+        radius: 1200, color: 'red', fillColor: '#7f1d1d', fillOpacity: 0.6, className: 'heat-glow'
+    }).addTo(map);
+
+    map.flyTo([-37.8200, 144.9834], 14); // Fly to MCG
+
+} else {
+    // ... existing code ...
+    map.flyTo([-37.8136, 144.9631], 14); // Reset to CBD
+}
             lucide.createIcons();
         }
     </script>
