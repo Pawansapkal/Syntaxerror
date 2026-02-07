@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <button class="control-btn" onclick="toggleTheme()">
+    <i data-lucide="moon" id="themeIcon"></i>
+</button>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ParkSense | Melbourne</title>
@@ -454,6 +457,36 @@ const parkingSpots = [
 }
             lucide.createIcons();
         }
+   // 1. Save the Tile Layer to a variable so we can change it later
+let currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19
+}).addTo(map);
+
+// 2. The Toggle Function
+function toggleTheme() {
+    const body = document.body;
+    const icon = document.getElementById('themeIcon');
+    
+    // Toggle Class
+    body.classList.toggle('dark-mode');
+    const isDark = body.classList.contains('dark-mode');
+
+    // Update Icon
+    if (isDark) {
+        icon.setAttribute('data-lucide', 'sun'); // Switch to Sun icon
+        
+        // Switch Map to Dark Mode Tiles
+        currentTileLayer.setUrl('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png');
+    } else {
+        icon.setAttribute('data-lucide', 'moon'); // Switch to Moon icon
+        
+        // Switch Map back to Light Mode Tiles
+        currentTileLayer.setUrl('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png');
+    }
+
+    // Refresh Icons
+    lucide.createIcons();
+}
     </script>
 </body>
 </html>
